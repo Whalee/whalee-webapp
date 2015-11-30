@@ -1,1 +1,3 @@
-# whalee-webapp
+# todoMEAN
+todo list app on MEAN
+
