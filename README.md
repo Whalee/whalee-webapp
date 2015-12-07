@@ -1,3 +1,3 @@
-# todoMEAN
-todo list app on MEAN
+# Whalee Web App
 
+SOON
