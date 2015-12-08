@@ -2,7 +2,7 @@
 <!doctype html>
 
 <!-- ASSIGN OUR ANGULAR MODULE -->
-<html ng-app="scotchTodo">
+<html ng-app="Whalee">
 <head>
     <!-- META -->
     <meta charset="utf-8">
@@ -11,7 +11,7 @@
     <title>HOME</title>
 
     <!-- SCROLLS -->
-    <link rel="stylesheet" href="mdl/material.min.css"><!-- load bootstrap -->
+    <link rel="stylesheet" href="../public/mdl/material.min.css"><!-- load bootstrap -->
     <style>
         html                    { overflow-y:scroll; }
         body                    { padding-top:50px; }
@@ -20,6 +20,7 @@
     <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <script src="../public/mdl/material.min.js"></script><!-- load angular -->
     <script src="js/core.js"></script>
 
 </head>
@@ -28,6 +29,10 @@
     <div class="container">
             <a ng-href="/sla">SLA</a>
             <a ng-href="/">Logout</a>
+            <button type="submit" ng-click="addUser()">Add user</button>
+            <button type="submit" ng-click="removeUser()">Remove user</button>
+            <label>{{userInfo}}</label>
+            <button type="submit" ng-click="getUser()">Get user</button>
     </div>
 
 </body>
