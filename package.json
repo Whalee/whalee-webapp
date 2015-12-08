@@ -1,9 +1,9 @@
 {
-  "name"         : "node-todo",
+  "name"         : "Whalee",
   "version"      : "0.0.0",
-  "description"  : "Simple todo application.",
+  "description"  : "Whalee",
   "main"         : "server.js",
-  "author"       : "Scotch",
+  "author"       : "Whalee",
   "dependencies" : {
     "express"    : "~4.7.2",
     "mongoose"   : "~3.6.2",
