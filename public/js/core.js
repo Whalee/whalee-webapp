@@ -4,9 +4,10 @@ var scotchTodo = angular.module('Whalee', []);
 function mainController($scope, $http) {
 
     $scope.userInfo = {};
+    $scope.formData = {};
 
     $scope.addUser = function() {
-        $http.post('/api/users','user1')
+        $http.post('/api/users', $scope.formData)
             .success(function(data){
                 $scope.userInfo = data;
                 console.log(data);
