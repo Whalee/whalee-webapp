@@ -5,6 +5,7 @@
 
     module.exports = mongoose.model('User', {
         id : String,
+        token : String,
         sla : String,
         projects : [String]
     });

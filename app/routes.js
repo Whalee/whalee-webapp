@@ -1,11 +1,14 @@
 
 var passport = require('passport');
+var User = require('./models/user');
+var Project = require('./models/project');
 
 // expose the routes to our app with module.exports
 module.exports = function(app) {
 
     // home
     app.get('/home', function(req, res) {
+        console.log(req.user);
         res.sendfile('./views/home.html');
     });
 
@@ -159,3 +162,4 @@ module.exports = function(app) {
         });
     });
 };
+
