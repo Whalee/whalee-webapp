@@ -85,13 +85,13 @@ module.exports = function(app) {
 
     // delete a user
     app.delete('/api/users/:user_id', function(req, res) {
-        Project.remove({
+        User.remove({
             id : req.params.user_id
         }, function(err, user) {
             if (err)
                 res.send(err);
 
-            Todo.find(function(err, users) {
+            User.find(function(err, users) {
                 if (err)
                     res.send(err)
                 res.json(users);
@@ -137,7 +137,7 @@ module.exports = function(app) {
                 res.send(err);
 
             // get and return all the projects after you create another
-            Todo.find(function(err, projects) {
+            Project.find(function(err, projects) {
                 if (err)
                     res.send(err)
                 res.json(projects);
@@ -154,7 +154,7 @@ module.exports = function(app) {
             if (err)
                 res.send(err);
 
-            Todo.find(function(err, projects) {
+            Project.find(function(err, projects) {
                 if (err)
                     res.send(err)
                 res.json(projects);
