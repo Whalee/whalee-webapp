@@ -16,7 +16,7 @@
     var GITHUB_CLIENT_SECRET = "adf5ece9f96e3a23c2b31404f0ee40c85b20c584";
 
     // configuration ===============================================================
-    //mongoose.connect(database.url);     // connect to mongoDB database
+    mongoose.connect(database.url);     // connect to mongoDB database
 
     app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
     app.use(morgan('dev'));                                         // log every request to the console

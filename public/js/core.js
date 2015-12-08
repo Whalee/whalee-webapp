@@ -1,12 +1,12 @@
 // public/core.js
-var scotchTodo = angular.module('Whalee', []);
+var whalee = angular.module('whalee', []);
 
 function mainController($scope, $http) {
 
-    $scope.userInfo = {};
     $scope.formData = {};
 
     $scope.addUser = function() {
+        console.log("ICI");
         $http.post('/api/users', $scope.formData)
             .success(function(data){
                 $scope.userInfo = data;
@@ -14,7 +14,7 @@ function mainController($scope, $http) {
             })
             .error(function(data){
                 
-                console.log('Error: '+data);
+                console.log('Error: ' + data);
             });
     };
 
@@ -28,7 +28,7 @@ function mainController($scope, $http) {
                 
                 console.log('Error: '+data);
             });
-    }
+    };
 
     $scope.getUser = function() {
         $http.get('/api/users/' + 'user1')
@@ -40,7 +40,7 @@ function mainController($scope, $http) {
                 
                 console.log('Error: '+data);
             });
-    }
+    };
 
     
 }

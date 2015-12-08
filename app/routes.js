@@ -8,7 +8,6 @@ module.exports = function(app) {
 
     // home
     app.get('/home', function(req, res) {
-        console.log(req.user);
         res.sendfile('./views/home.html');
     });
 
@@ -42,7 +41,7 @@ module.exports = function(app) {
 
             // if there is an error retrieving, send the error. nothing after res.send(err) will execute
             if (err)
-                res.send(err)
+                res.send(err);
 
             res.json(users); // return all users in JSON format
         });
@@ -51,11 +50,14 @@ module.exports = function(app) {
     // get an user
     app.get('/api/users/:user_id', function(req, res) {
         User.find({
-            id : req.params.user
+            id : req.params.user_id
         }, function(err, user) {
             // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-            if (err)
-                res.send(err)
+            if (err) {
+                res.send(err);
+                console.log(err);
+            }
+
 
             res.json(user); // return user in JSON format
         });
@@ -66,15 +68,18 @@ module.exports = function(app) {
 
         // create a user, information comes from AJAX request from Angular
         User.create({
-            id : req.body.text,
-            sla: 1,
-            projects : []
-        }, function(err, todo) {
-            if (err)
+            id : req.body.text/*,
+            token : 'token',
+            sla: '1',
+            projects : [] */
+        }, function(err, user) {
+            if (err) {
                 res.send(err);
+                console.log(err);
+            }
 
             // get and return all the users after you create another
-            Todo.find(function(err, users) {
+            User.find(function(err, users) {
                 if (err)
                     res.send(err)
                 res.json(users);
@@ -107,7 +112,7 @@ module.exports = function(app) {
 
             // if there is an error retrieving, send the error. nothing after res.send(err) will execute
             if (err)
-                res.send(err)
+                res.send(err);
 
             res.json(projects); // return all projects in JSON format
         });
@@ -120,7 +125,7 @@ module.exports = function(app) {
         }, function(err, project) {
             // if there is an error retrieving, send the error. nothing after res.send(err) will execute
             if (err)
-                res.send(err)
+                res.send(err);
 
             res.json(project); // return project in JSON format
         });

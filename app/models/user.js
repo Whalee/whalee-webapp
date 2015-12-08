@@ -4,8 +4,8 @@
     var mongoose = require('mongoose');
 
     module.exports = mongoose.model('User', {
-        id : String,
+        id : String/*,
         token : String,
         sla : String,
-        projects : [String]
+        projects : [String]*/
     });
