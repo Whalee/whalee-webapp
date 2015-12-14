@@ -50,7 +50,7 @@ module.exports = function(app) {
     // get an user
     app.get('/api/users/:user_id', function(req, res) {
         User.find({
-            id : req.params.user_id
+            githubID : req.params.user_id
         }, function(err, user) {
             // if there is an error retrieving, send the error. nothing after res.send(err) will execute
             if (err) {

@@ -5,7 +5,7 @@ function mainController($scope, $http) {
 
     $scope.formData = {};
 
-    $scope.addUser = function() {
+    /*$scope.addUser = function() {
         console.log("ICI");
         $http.post('/api/users', $scope.formData)
             .success(function(data){
@@ -28,10 +28,10 @@ function mainController($scope, $http) {
                 
                 console.log('Error: '+data);
             });
-    };
+    };*/
 
     $scope.getUser = function() {
-        $http.get('/api/users/' + 'user1')
+        $http.get('/api/users/' + $scope.formData.text)
             .success(function(data){
                 $scope.userInfo = data;
                 console.log(data);

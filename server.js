@@ -29,26 +29,61 @@
 
     // routes ======================================================================
     require('./app/routes.js')(app);
+    var User = require('./app/models/user');
 
     passport.use(new GitHubStrategy({
         clientID: GITHUB_CLIENT_ID,
         clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/callback"
+        callbackURL: "http://localhost:3000/auth/callback"
     },
     function (accessToken, refreshToken, profile, done) {
         process.nextTick(function () {
-        console.log(profile);
-            return done(null, profile);
+            console.log(profile);
+            User.findOne({ 'githubID' : profile.id }, function (err, user) {
+                 // if there is an error, stop everything and return that
+                // ie an error connecting to the database
+                if (err)
+                    return done(err);
+
+                // if the user is found then log them in
+                if (user) {
+                    return done(null, user); // user found, return that user
+                } else {
+                    // if there is no user, create them
+                    var newUser = new User();
+
+                    // set all of the user data that we need
+                    newUser.githubID = profile.id;
+                    newUser.token = accessToken;
+                    newUser.username = profile.username;
+                    newUser.displayName = profile.displayName;
+                    newUser.avatarUrl = profile._json.avatar_url;
+                    newUser.sla = '1';
+                    newUser.projects = [];
+
+                    // save our user into the database
+                    newUser.save(function(err) {
+                        if (err)
+                            throw err;
+                        return done(null, newUser);
+                    });
+                }
+            });
+
+            User.findOne({ 'id' : profile.id }, function (err, user) {
+                console.log(user);
+            });
         });
-    }
-    ));
+    }));
 
     passport.serializeUser(function(user, done) {
-        done(null, user);
+        done(null, user.id);
     });
 
-    passport.deserializeUser(function(obj, done) {
-        done(null, obj);
+    passport.deserializeUser(function(id, done) {
+        User.findById(id, function(err, user) {
+            done(err, user)
+        });
     });
 
     // listen (start app with node server.js) ======================================

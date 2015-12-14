@@ -4,8 +4,11 @@
     var mongoose = require('mongoose');
 
     module.exports = mongoose.model('User', {
-        id : String/*,
+        githubID : String,
         token : String,
+        username : String,
+        displayName : String,
+        avatarUrl : String,
         sla : String,
-        projects : [String]*/
+        projects : [String]
     });
