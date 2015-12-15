@@ -1,6 +1,6 @@
 {
   "name"         : "Whalee",
-  "version"      : "0.0.0",
+  "version"      : "0.0.1",
   "description"  : "Whalee",
   "main"         : "server.js",
   "author"       : "Whalee",
@@ -11,6 +11,7 @@
     "body-parser": "~1.5.2",
     "method-override": "~2.1.2",
     "express-session": "1.4.0",
-    "cookie-parser" : ""
+    "cookie-parser" : "",
+    "https" : ""
     }
 }

@@ -51,6 +51,14 @@
 
                 // if the user is found then log them in
                 if (user) {
+                    User.update({id : user.id}, {
+                        githubID : profile.id,
+                        githubToken : accessToken,
+                        username : profile.username,
+                        displayName : profile.displayName,
+                        avatarUrl : profile._json.avatar_url
+                    }, function(err, numberAffected, rawResponse) {
+                    });
                     return done(null, user); // user found, return that user
                 } else {
                     // if there is no user, create them

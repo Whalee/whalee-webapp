@@ -2,9 +2,13 @@
 var passport = require('passport');
 var User = require('./models/user');
 var Project = require('./models/project');
+var https = require('https');
+
 
 // expose the routes to our app with module.exports
 module.exports = function(app) {
+
+    // views -------------------------------------------------------------------------
 
     // home
     app.get('/home', function(req, res) {
@@ -30,7 +34,7 @@ module.exports = function(app) {
         passport.authenticate('github', {successRedirect: '/home',
                         failureRedirect:'/error'}));
 
-    // api ---------------------------------------------------------------------
+    // local api ----------------------------------------------------------------------
 
     app.get('/api/user', function(req, res) {
         if(req.user)
@@ -38,6 +42,41 @@ module.exports = function(app) {
         else
             res.redirect('/');     
     });
+
+    // github api ---------------------------------------------------------------------
+
+    app.get('/api/projects', function(req, res) {
+        if(req.user) {
+            // return user in JSON format
+            var options = {
+                host : 'api.github.com', // here only the domain name
+                // (no http/https !)
+                port : 443,
+                path : '/user/repos', // the rest of the url with parameters if needed
+                headers: {
+                    "authorization" : "Bearer " +req.user.githubToken, 
+                    "user-agent" : "Whalee-webapp" // GitHub is happy with a unique user agent 
+                },
+                method : 'GET' // do GET
+            };
+
+            https.request(options, function(res) {
+                console.log('STATUS: ' + res.statusCode);
+                console.log('HEADERS: ' + JSON.stringify(res.headers));
+                res.setEncoding('utf8');
+                res.on('data', function (chunk) {
+                    console.log('BODY: ' + chunk);
+                    //res.json(chunk);
+                });
+            }).on('error', function(e) {
+                    console.log("Got error: " + e.message);
+                }).end();           
+        } else {
+            res.redirect('/');  
+        }
+    });
+
+    // mika api -----------------------------------------------------------------------
 
     /*app.get('/api/projects' function(req, res) {
         if(req.user) {
