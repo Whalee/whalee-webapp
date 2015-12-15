@@ -1,6 +1,8 @@
 
     // set up ======================================================================
     var express  = require('express');
+    var session = require('express-session')
+    var cookieParser = require('cookie-parser')
     var app      = express();                               // create our app w/ express
     var mongoose = require('mongoose');                     // mongoose for mongodb
     var port     = process.env.PORT || 3000;                // set the port
@@ -24,6 +26,8 @@
     app.use(bodyParser.json());                                     // parse application/json
     app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
     app.use(methodOverride());
+    app.use(cookieParser());
+    app.use(session({ secret: 'mylittledirtysecret' }));
     app.use(passport.initialize());
     app.use(passport.session());
 
@@ -54,7 +58,7 @@
 
                     // set all of the user data that we need
                     newUser.githubID = profile.id;
-                    newUser.token = accessToken;
+                    newUser.githubToken = accessToken;
                     newUser.username = profile.username;
                     newUser.displayName = profile.displayName;
                     newUser.avatarUrl = profile._json.avatar_url;
@@ -68,10 +72,6 @@
                         return done(null, newUser);
                     });
                 }
-            });
-
-            User.findOne({ 'id' : profile.id }, function (err, user) {
-                console.log(user);
             });
         });
     }));

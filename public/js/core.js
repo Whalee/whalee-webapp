@@ -4,6 +4,15 @@ var whalee = angular.module('whalee', []);
 function mainController($scope, $http) {
 
     $scope.formData = {};
+    $http.get('/api/user/')
+            .success(function(data){
+                $scope.userInfo = data;
+                console.log(data);
+            })
+            .error(function(data){
+                
+                console.log('Error: '+data);
+            });
 
     /*$scope.addUser = function() {
         console.log("ICI");
@@ -28,10 +37,10 @@ function mainController($scope, $http) {
                 
                 console.log('Error: '+data);
             });
-    };*/
+    };
 
     $scope.getUser = function() {
-        $http.get('/api/users/' + $scope.formData.text)
+        $http.get('/api/lolcat/')
             .success(function(data){
                 $scope.userInfo = data;
                 console.log(data);
@@ -40,7 +49,7 @@ function mainController($scope, $http) {
                 
                 console.log('Error: '+data);
             });
-    };
+    };*/
 
     
 }

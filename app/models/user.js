@@ -5,7 +5,7 @@
 
     module.exports = mongoose.model('User', {
         githubID : String,
-        token : String,
+        githubToken : String,
         username : String,
         displayName : String,
         avatarUrl : String,

@@ -8,12 +8,10 @@ module.exports = function(app) {
 
     // home
     app.get('/home', function(req, res) {
-        res.sendfile('./views/home.html');
-    });
-
-    // sla
-    app.get('/sla', function(req, res) {
-        res.sendfile('./views/sla.html');
+        if(req.user)
+            res.sendfile('./public/mdl/templates/dashboard/index.html');
+        else
+            res.redirect('/');
     });
 
     // error
@@ -33,8 +31,24 @@ module.exports = function(app) {
                         failureRedirect:'/error'}));
 
     // api ---------------------------------------------------------------------
+
+    app.get('/api/user', function(req, res) {
+        if(req.user)
+            res.json(req.user); // return user in JSON format
+        else
+            res.redirect('/');     
+    });
+
+    /*app.get('/api/projects' function(req, res) {
+        if(req.user) {
+
+        } else {
+            res.redirect('/');
+        }
+    }); */
+
     // get all users
-    app.get('/api/users', function(req, res) {
+    /*app.get('/api/users', function(req, res) {
 
         // use mongoose to get all users in the database
         User.find(function(err, users) {
@@ -45,6 +59,11 @@ module.exports = function(app) {
 
             res.json(users); // return all users in JSON format
         });
+    });
+
+    app.get('/api/lolcat', function(req, res) {
+        console.log("REQ.USER : \n" + req.user);
+        res.json(req.user); // return user in JSON format     
     });
 
     // get an user
@@ -68,10 +87,10 @@ module.exports = function(app) {
 
         // create a user, information comes from AJAX request from Angular
         User.create({
-            id : req.body.text/*,
+            id : req.body.text,
             token : 'token',
             sla: '1',
-            projects : [] */
+            projects : [] 
         }, function(err, user) {
             if (err) {
                 res.send(err);
@@ -165,6 +184,7 @@ module.exports = function(app) {
                 res.json(projects);
             });
         });
-    });
+    });*/
+
 };
 
