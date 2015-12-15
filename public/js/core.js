@@ -45,6 +45,15 @@ whalee.controller('mainController', function($scope, $http) {
 
 whalee.controller('projectsController', function($scope) {
     $scope.message = 'We are in the projects page';
+    $http.get('/api/projects/')
+            .success(function(data){
+                $scope.projects = data;
+                console.log(data);
+            })
+            .error(function(data){
+                
+                console.log('Error: '+data);
+            });
 });
 
 whalee.controller('addController', function($scope) {
@@ -69,15 +78,6 @@ whalee.controller('addController', function($scope) {
 
 
 
-    $http.get('/api/projects/')
-            .success(function(data){
-                $scope.projects = data;
-                console.log(data);
-            })
-            .error(function(data){
-                
-                console.log('Error: '+data);
-            });
 
     /*$scope.addUser = function() {
         console.log("ICI");
