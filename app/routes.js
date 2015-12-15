@@ -13,7 +13,7 @@ module.exports = function(app) {
     // home
     app.get('/home', function(req, res) {
         if(req.user)
-            res.sendfile('./public/mdl/templates/dashboard/index.html');
+            res.sendfile('./views/home.html');
         else
             res.redirect('/');
     });
