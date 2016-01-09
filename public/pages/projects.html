@@ -1,6 +1,61 @@
 <!-- projects.html -->
+
+<style>
+	.mdl-layout__content{
+ 	 margin-left: 500;
+	}
+</style>
+
     <div class="jumbotron text-center">
+        <div class="mdl-layout__content" >
         <h1>Projects Page</h1>
 
         <p>{{ message }}</p>
+
+        <div class="mdl-card mdl-shadow--2dp">
+  			<div class="mdl-card__title">
+  				CPU
+  			</div>
+  			<div class="mdl-layout-spacer"></div>
+  			<div class="mdl-card__supporting-text">
+  						ICI<br/>
+						SERA<br/>
+						LE<br/>
+						GRAPH<br/>
+			</div>
+  			<div class="mdl-layout-spacer"></div>
+  			</div>
+		</div>
+
+		<div class="mdl-card mdl-shadow--2dp">
+  			<div class="mdl-card__title">
+  				Memory
+  			</div>
+  			<div class="mdl-layout-spacer"></div>
+  			<div class="mdl-card__supporting-text">
+  						ICI<br/>
+						SERA<br/>
+						LE<br/>
+						GRAPH<br/>
+			</div>
+  			<div class="mdl-layout-spacer"></div>
+  			</div>
+		</div>
+		<div class="mdl-grid">
+			<div class="mdl-cell mdl-cell--6-col">
+				<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
+  					<input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
+  					<span class="mdl-checkbox__label">Enable Auto-Deploy</span>
+				</label>
+			</div>
+			<div class="mdl-cell mdl-cell--6-col">
+				<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"  ng-click="onDeployClick()">
+				<b ng-bind="deployButtonText()"></b>
+				</button>
+			</div>
+		</div>
+
+
+
+</div>
     </div>

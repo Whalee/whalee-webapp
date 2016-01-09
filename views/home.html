@@ -104,8 +104,14 @@
           </div>
         </header>
         <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
-          <a class="mdl-navigation__link" href="#home2"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>Home</a>
-          <a class="mdl-navigation__link" href="#projects"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" >inbox</i>Your projects</a>
+          <a class="mdl-navigation__link" href="#sla"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>Home</a>
+
+          <a class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" >inbox</i>Your projects</a>
+
+          <ul>
+            <li ng-repeat = "project in projectList"><a href="#projects/{{ project.id }}">{{ project.name }}</a></li>
+          </ul>
+
           <a class="mdl-navigation__link" href="#add"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">delete</i>Add project</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
@@ -172,10 +178,13 @@
       </svg>
       <a href="https://github.com/google/material-design-lite/blob/master/templates/dashboard/" target="_blank" id="view-source" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--accent mdl-color-text--accent-contrast">View Source</a>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script><!-- load angular -->
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <!-- load angular -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
     <script src="mdl/material.min.js"></script>
     <script src="js/core.js"></script>
+    <!-- Angular chart -->
+    <script src="chart/angular-chart.js/"></script>
   </div>
   </body>
 </html>

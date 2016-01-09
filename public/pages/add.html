@@ -3,4 +3,18 @@
         <h1>Add Page</h1>
 
         <p>{{ message }}</p>
+
+        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+        	<thead>
+        		<tr class="mdl-data-table__cell--non-numeric">
+        			<th>Name</th>
+        			<th>Size</th>
+        		</tr>
+        	</thead>
+        	<tr class="mdl-data-table__cell--non-numeric" ng-repeat = "project in projectList">
+        		<td>  {{ project.name }} </td>
+        		<td>  {{ project.size }} </td>
+        	</tr>
+        </table>
+
     </div>

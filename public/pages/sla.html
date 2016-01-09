@@ -1,0 +1,87 @@
+<!-- sla.html -->
+    <div class="jumbotron text-center">
+        <h1>SLA Page</h1>
+
+        <p>{{ message }}</p>
+
+        <div class="mdl-grid">
+        	<div class="mdl-cell mdl-cell--4-col">
+        		<div class="mdl-card mdl-shadow--2dp">
+  					<div class="mdl-card__title">
+  						BRONZE
+  					</div>
+  					<div class="mdl-card__media mdl-typography--text-center">
+  						FREE
+  					</div>
+  					<div class="mdl-card__supporting-text">
+  						Single web server instance<br/>
+						No scalability<br/>
+						Availability : No warranty<br/>
+						Support: only email<br/>
+  					</div>
+  					<div class="mdl-card__actions mdl-card--border">
+  					   <div class="mdl-layout-spacer"></div>
+  						<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" ng-hide="isBronze" ng-click="onBronzeClick()">
+      						Choose
+    					</a>
+    					<label ng-show="isBronze">
+    						Current
+    					</label>
+    					<div class="mdl-layout-spacer"></div>
+  					</div>
+				</div>
+        	</div>
+  			<div class="mdl-cell mdl-cell--4-col">
+  				<div class="mdl-card mdl-shadow--2dp">
+  					<div class="mdl-card__title">
+  						SILVER
+  					</div>
+  					<div class="mdl-card__media mdl-typography--text-center">
+  						$14.99
+  					</div>
+  					<div class="mdl-card__supporting-text">
+  						Multiple instances available<br/>
+						Scalability but with delay<br/>
+						Availability: 98%<br/>
+						Support : work days and hours<br/>
+  					</div>
+  					<div class="mdl-card__actions mdl-card--border">
+  					   <div class="mdl-layout-spacer"></div>
+  						<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" ng-hide="isSilver" ng-click="onSilverClick()">
+      						Choose
+    					</a>
+    					<label ng-show="isSilver">
+    						Current
+    					</label>
+    					<div class="mdl-layout-spacer"></div>
+  					</div>
+				</div>
+  			</div>
+  			<div class="mdl-cell mdl-cell--4-col">
+  				<div class="mdl-card mdl-shadow--2dp">
+  					<div class="mdl-card__title">
+  						GOLD
+  					</div>
+  					<div class="mdl-card__media mdl-typography--text-center">
+  						$24.99
+  					</div>
+  					<div class="mdl-card__supporting-text">
+  						Multiple instances available<br/>
+						Scalability no delay<br/>
+						Availability: 99.5%<br/>
+						Support : 24/7<br/>
+  					</div>
+  					<div class="mdl-card__actions mdl-card--border">
+  					   <div class="mdl-layout-spacer"></div>
+  						<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" ng-hide="isGold" ng-click="onGoldClick()">
+      						Choose
+    					</a>
+    					<label ng-show="isGold">
+    						Current
+    					</label>
+    					<div class="mdl-layout-spacer"></div>
+  					</div>
+				</div>
+  			</div>
+        </div>
+    </div>
