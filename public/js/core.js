@@ -3,7 +3,7 @@
 
 
         // include ngRoute for all our routing needs
-    var whalee = angular.module('whalee', ['ngRoute']); //,"chart.js"]);
+    var whalee = angular.module('whalee', ['ngRoute']);
 
 
 //    whalee.config(['ChartJsProvider', function (ChartJsProvider) {
@@ -87,6 +87,16 @@ whalee.controller('slaController', function($scope) {
 whalee.controller('projectsController', function($scope, $http, id) {
     $scope.message = 'We are in the projects page of the project '+id;
     $scope.isDeployed = false;
+
+    $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+    $scope.series = ['Series A', 'Series B'];
+    $scope.data = [
+      [65, 59, 80, 81, 56, 55, 40],
+      [28, 48, 40, 19, 86, 27, 90]
+    ];
+
+
+
     $scope.deployButtonText = function(){
         return ($scope.isDeployed) ? "Undeploy" : "Deploy";
     };
