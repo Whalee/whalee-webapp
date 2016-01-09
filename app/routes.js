@@ -66,7 +66,7 @@ module.exports = function(app) {
                 res.setEncoding('utf8');
                 res.on('data', function (chunk) {
                     console.log('BODY: ' + chunk);
-                    //res.json(chunk);
+                    res.json(chunk);
                 });
             }).on('error', function(e) {
                     console.log("Got error: " + e.message);
