@@ -48,6 +48,7 @@ module.exports = function(app) {
     app.get('/api/projects', function(req, res) {
         if(req.user) {
             // return user in JSON format
+            console.log("DANS API : " + req.user.githubToken);
             var options = {
                 host : 'api.github.com', // here only the domain name
                 // (no http/https !)
@@ -60,17 +61,22 @@ module.exports = function(app) {
                 method : 'GET' // do GET
             };
 
-            https.request(options, function(res) {
-                console.log('STATUS: ' + res.statusCode);
-                console.log('HEADERS: ' + JSON.stringify(res.headers));
-                res.setEncoding('utf8');
-                res.on('data', function (chunk) {
-                    console.log('BODY: ' + chunk);
-                    res.json(chunk);
+            var projects = https.request(options, function(res2) {
+                console.log('STATUS: ' + res2.statusCode);
+                console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                res2.setEncoding('utf8');
+                str = "";
+                res2.on('data', function (chunk) {
+                    str += chunk;
                 });
-            }).on('error', function(e) {
-                    console.log("Got error: " + e.message);
-                }).end();           
+
+                res2.on('end', function () {
+                    console.log(str);
+                    res.json(str);
+                });
+
+            }).on('error', function(e) {console.log("Got error: " + e.message);}).end();      
+            
         } else {
             res.redirect('/');  
         }
