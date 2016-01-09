@@ -116,12 +116,11 @@ whalee.controller('projectsController', function($scope, $http, id) {
 
 whalee.controller('addController', function($scope, $http) {
     $scope.message = 'You want to add a damn project?';
-    $scope.projectList = [{ name : "test1", size : "size1"},{name : "test2", size : "size2"}];
     $scope.onAddClick = function(){
     };
     $http.get('/api/projects/')
             .success(function(data){
-                $scope.projectList2 = data;
+                $scope.projectListGitHub = data;
                 console.log(data);
             })
             .error(function(data){

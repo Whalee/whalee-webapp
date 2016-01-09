@@ -72,7 +72,7 @@ module.exports = function(app) {
 
                 res2.on('end', function () {
                     console.log(str);
-                    res.json(str);
+                    res.json(JSON.parse(str));
                 });
 
             }).on('error', function(e) {console.log("Got error: " + e.message);}).end();      

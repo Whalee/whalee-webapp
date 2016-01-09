@@ -7,13 +7,15 @@
         <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
         	<thead>
         		<tr class="mdl-data-table__cell--non-numeric">
-        			<th>Name</th>
-        			<th>Size</th>
+        			<th>id</th>
+        			<th>name</th>
+        			<th>full_name</th>
         		</tr>
         	</thead>
-        	<tr class="mdl-data-table__cell--non-numeric" ng-repeat = "project in projectList">
+        	<tr class="mdl-data-table__cell--non-numeric" ng-repeat = "project in projectListGitHub">
+        	    <td>  {{ project.id }} </td>
         		<td>  {{ project.name }} </td>
-        		<td>  {{ project.size }} </td>
+        		<td>  {{ project.full_name }} </td>
         	</tr>
         </table>
 
