@@ -51,6 +51,7 @@
 
                 // if the user is found then log them in
                 if (user) {
+                    console.log("DANS SERVER.JS : " + accessToken);
                     User.update({id : user.id}, {
                         githubID : profile.id,
                         githubToken : accessToken,
