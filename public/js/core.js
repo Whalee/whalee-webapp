@@ -59,28 +59,72 @@ whalee.controller('mainController', function($scope,$http) {
 
 });
 
-whalee.controller('slaController', function($scope) {
-    $scope.message = "We are in the sla"
-    $scope.isBronze = true;
+whalee.controller('slaController', function($scope,$http) {
+    $scope.message = "We are in the sla";
+    $http.get('/api/user/')
+            .success(function(data){
+                $scope.userInfo = data;
+                console.log(data);
+            })
+            .error(function(data){
+                
+                console.log('Error: '+data);
+            });
+
+    $scope.isBronze = false;
     $scope.isSilver = false;
     $scope.isGold = false;
+    if(($scope.userInfo.sla) == "1"){
+        $scope.isBronze = true;
+    }else if($scope.userInfo.sla == "2"){
+        $scope.isSilver = true;
+    }else if($scope.userInfo.sla == "3"){
+        $scope.isGold = true;
+    }
 
     $scope.onBronzeClick = function(){
         $scope.isBronze = true;
         $scope.isSilver = false;
         $scope.isGold = false;
+        $http.post('/api/sla/' + "1")
+            .success(function(data){
+                $scope.userInfo = data;
+                console.log(data);
+            })
+            .error(function(data){
+                
+                console.log('Error: '+data);
+            });
     };
 
     $scope.onSilverClick = function(){
         $scope.isBronze = false;
         $scope.isSilver = true;
         $scope.isGold = false;
+        $http.post('/api/sla/' + "2")
+            .success(function(data){
+                $scope.userInfo = data;
+                console.log(data);
+            })
+            .error(function(data){
+                
+                console.log('Error: '+data);
+            });
     };
 
     $scope.onGoldClick = function(){
         $scope.isBronze = false;
         $scope.isSilver = false;
         $scope.isGold = true;
+        $http.post('/api/sla/' + "3")
+            .success(function(data){
+                $scope.userInfo = data;
+                console.log(data);
+            })
+            .error(function(data){
+                
+                console.log('Error: '+data);
+            });
     };
 });
 
@@ -116,7 +160,24 @@ whalee.controller('projectsController', function($scope, $http, id) {
 
 whalee.controller('addController', function($scope, $http) {
     $scope.message = 'You want to add a damn project?';
+    $scope.projectToAdd = [];
+
+    $scope.toggleSelection = function toggleSelection(project) {
+        var idx = $scope.projectToAdd.indexOf(project);
+
+        // is currently selected
+        if (idx > -1) {
+          $scope.projectToAdd.splice(idx, 1);
+        }
+
+        // is newly selected
+        else {
+          $scope.projectToAdd.push(project);
+        }
+    };
+
     $scope.onAddClick = function(){
+        console.log($scope.projectToAdd);
     };
     $http.get('/api/projects/')
             .success(function(data){

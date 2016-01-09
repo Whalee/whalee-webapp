@@ -43,6 +43,18 @@ module.exports = function(app) {
             res.redirect('/');     
     });
 
+    // change sla for current user
+    app.post('/api/sla/:id', function(req, res) {
+        if(req.user){
+            User.update({id : req.user.id}, {
+                sla : req.params.id
+            });
+            res.json(req.user); // return user in JSON format
+        }else{
+            res.redirect('/');     
+        }
+    });
+
     // github api ---------------------------------------------------------------------
 
     app.get('/api/projects', function(req, res) {
@@ -83,7 +95,7 @@ module.exports = function(app) {
     });
 
     // mika api -----------------------------------------------------------------------
-
+        /*
     app.post('/api/project', function(req, res) {
         if(req.user) {
             // return user in JSON format
@@ -120,6 +132,7 @@ module.exports = function(app) {
             res.redirect('/');  
         }
     });
+*/
 
 
     /*app.get('/api/projects' function(req, res) {
