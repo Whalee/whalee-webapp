@@ -1,0 +1,5 @@
+{
+  "callbackurl":"HERE YOUR CALLBACK URL",
+  "github_id" : "HERE YOUR GITHUB CLIENT ID",
+  "github_secret" : "HERE YOUR GITHUB CLIENT SECRET"
+}
