@@ -165,7 +165,7 @@ module.exports = function(app) {
         
     app.post('/api/project', function(req, res) {
         if(req.user) {
-            s
+            
             var options = {
                 host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
                 // (no http/https !)
