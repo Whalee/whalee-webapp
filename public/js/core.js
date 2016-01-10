@@ -3,7 +3,7 @@
 
 
         // include ngRoute for all our routing needs
-    var whalee = angular.module('whalee', ['ngRoute']);
+    var whalee = angular.module('whalee', ['chart.js','ngRoute']);
 
 
 //    whalee.config(['ChartJsProvider', function (ChartJsProvider) {
