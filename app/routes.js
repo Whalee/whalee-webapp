@@ -60,7 +60,6 @@ module.exports = function(app) {
     app.get('/api/projects', function(req, res) {
         if(req.user) {
             // return user in JSON format
-            console.log("DANS API : " + req.user.githubToken);
             var options = {
                 host : 'api.github.com', // here only the domain name
                 // (no http/https !)
