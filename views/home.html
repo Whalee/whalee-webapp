@@ -58,6 +58,9 @@
       margin-bottom: 40px;
       z-index: 900;
     }
+    #view-fragment {
+      margin-right: 100px;
+    }
     </style>
   </head>
   <body ng-controller="mainController">
@@ -74,39 +77,27 @@
           <div class="demo-avatar-dropdown">
             <span>{{userInfo.username}}</span>
             <div class="mdl-layout-spacer"></div>
-            <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
-              <i class="material-icons" role="presentation">arrow_drop_down</i>
-              <span class="visuallyhidden">Accounts</span>
-            </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
-              <li class="mdl-menu__item">hello@example.com</li>
-              <li class="mdl-menu__item">info@example.com</li>
-              <li class="mdl-menu__item"><i class="material-icons">add</i>Add another account...</li>
-            </ul>
+            
           </div>
         </header>
         <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
-          <a class="mdl-navigation__link" href="#sla"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>Home</a>
+          <a class="mdl-navigation__link" href="#sla"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">star</i>Sla</a>
 
-          <a class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" >inbox</i>Your projects</a>
+          <a class="mdl-navigation__link" ng-click="onProjectsClick()"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" >{{ projectsIcon }}</i>Your projects</a>
 
-          <ul>
-            <li ng-repeat = "project in projectList"><a href="#projects/{{ project.id }}">{{ project.name }}</a></li>
-          </ul>
+          <div ng-show="showProjects">
+          <a class="mdl-navigation__link" ng-repeat = "project in projectList" href="#projects/{{ project.id }}"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" >trending_flat</i>{{ project.name }}</a>
+          </div>
 
-          <a class="mdl-navigation__link" href="#add"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">delete</i>Add project</a>
+          <a class="mdl-navigation__link" href="#add"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">add_circle</i>Add project</a>
           <div class="mdl-layout-spacer"></div>
-          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
         </nav>
       </div>
       <main class="mdl-layout__content mdl-color--grey-100" >
         <!-- here are the views -->
         
 
-        <div ng-view></div>
-
-
-
+        <div style="margin: 0 10px;" ng-view></div>
 
 
       </main>

@@ -8,7 +8,7 @@
 
     <div class="jumbotron text-center">
         <div class="mdl-layout__content" >
-        <h1>Projects Page</h1>
+        <h3>Monitor your application</h3>
 
         <p>{{ message }}</p>
 
@@ -17,12 +17,12 @@
   				CPU
   			</div>
   			<div class="mdl-layout-spacer"></div>
-  			<div class="mdl-card__supporting-text">
-  						ICI<br/>
-						SERA<br/>
-						LE<br/>
-						GRAPH<br/>
-			</div>
+  			
+  			<canvas id="line" class="chart chart-line" chart-data="data"
+  				chart-labels="labels" chart-legend="true" chart-series="series"
+  				chart-click="onClick" >
+			</canvas>
+
   			<div class="mdl-layout-spacer"></div>
   			</div>
 		</div>
@@ -38,12 +38,6 @@
   				chart-click="onClick" >
 			</canvas>
 			
-  			<div class="mdl-card__supporting-text">
-  						ICI<br/>
-						SERA<br/>
-						LE<br/>
-						GRAPH<br/>
-			</div>
   			<div class="mdl-layout-spacer"></div>
   			</div>
 		</div>

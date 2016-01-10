@@ -46,7 +46,19 @@
 
 whalee.controller('mainController', function($scope,$http) {
     $scope.formData = {};
+    $scope.showProjects = false;
+    $scope.projectsIcon = "keyboard_arrow_right";
     $scope.projectList = [{name : "projet1", id : "id1"},{name : "projet2", id : "id2"}];
+    $scope.onProjectsClick = function(){
+
+        $scope.showProjects = ! $scope.showProjects;
+        if($scope.showProjects){
+            $scope.projectsIcon = "keyboard_arrow_down";
+        }else{
+            $scope.projectsIcon = "keyboard_arrow_right";
+        }
+        console.log($scope.showProjects);
+    }
     $http.get('/api/user/')
             .success(function(data){
                 $scope.userInfo = data;
@@ -60,7 +72,7 @@ whalee.controller('mainController', function($scope,$http) {
 });
 
 whalee.controller('slaController', function($scope,$http) {
-    $scope.message = "We are in the sla";
+    $scope.message = "Please, choose your SLA.";
     $http.get('/api/user/')
             .success(function(data){
                 $scope.userInfo = data;
@@ -129,7 +141,7 @@ whalee.controller('slaController', function($scope,$http) {
 });
 
 whalee.controller('projectsController', function($scope, $http, id) {
-    $scope.message = 'We are in the projects page of the project '+id;
+    $scope.message = 'This is the project: '+id;
     $scope.isDeployed = false;
 
     $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
@@ -159,7 +171,7 @@ whalee.controller('projectsController', function($scope, $http, id) {
 });
 
 whalee.controller('addController', function($scope, $http) {
-    $scope.message = 'You want to add a damn project?';
+    $scope.message = 'Please, select the projects to add.';
     $scope.projectToAdd = [];
 
     $scope.toggleSelection = function toggleSelection(project) {
