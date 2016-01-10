@@ -144,13 +144,58 @@ whalee.controller('projectsController', function($scope, $http, id) {
     $scope.message = 'This is the project: '+id;
     $scope.isDeployed = false;
 
-    $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-    $scope.series = ['Series A', 'Series B'];
-    $scope.data = [
-      [65, 59, 80, 81, 56, 55, 40],
-      [28, 48, 40, 19, 86, 27, 90]
-    ];
+    $scope.timeScale = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+    $scope.seriesCPU = ['CPU'];
+    $scope.seriesMem = ['Memory'];
+    $scope.seriesDisk = ['Disk'];
+    $scope.dataCPU = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
+    $scope.dataMem = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+    $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+
+    $scope.containers = [{id : "C1"},{id : "C2"},{id : "C3"},{id : "C4"}];
+
+
+    $scope.onContainerClick = function(id){
+        console.log("On click sur le container "+id);
+        if(id=="C1"){
+            $scope.dataCPU = [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]];
+
+            $scope.dataMem = [[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]];
+
+            $scope.dataDisk = [[10, 10, 10, 10, 10, 10, 10, 10, 10, 10]];
+
+
+        }else if (id=="C2") {
+
+            $scope.dataCPU = [[5, 5, 5, 5, 10, 10, 8, 7, 6, 5]];
+
+            $scope.dataMem = [[4, 4, 7, 4, 4, 7, 4, 4, 7, 4]];
+
+            $scope.dataDisk = [[4, 4, 5, 5, 6, 6, 7, 7, 8, 8]];
+
+        }else if (id=="C3") {
+
+            $scope.dataCPU = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+            $scope.dataMem = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+            $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+
+        }else if (id=="C4") {
+
+            $scope.dataCPU = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+            $scope.dataMem = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+            $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+        }
+
+    }
 
 
     $scope.deployButtonText = function(){

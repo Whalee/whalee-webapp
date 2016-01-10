@@ -7,40 +7,79 @@
 </style>
 
     <div class="jumbotron text-center">
-        <div class="mdl-layout__content" >
         <h3>Monitor your application</h3>
 
         <p>{{ message }}</p>
 
-        <div class="mdl-card mdl-shadow--2dp">
+        <div class="mdl-grid">
+        	<div class="mdl-cell mdl-cell--2-col">
+        		<table class="mdl-data-table  mdl-js-data-table mdl-data-table--selectable">
+        	<thead>
+        		<tr>
+        			<th class="mdl-data-table__cell--non-numeric">Containers list</th>
+        		</tr>
+        	</thead>
+        	<tr ng-repeat = "container in containers" ng-click="onContainerClick(container.id)">
+        		<td class="mdl-data-table__cell--non-numeric">  {{ container.id }} </td>
+        	</tr>
+        </table>
+        	</div>
+        	<div class="mdl-cell mdl-cell--5-col">
+
+        	 <div class="mdl-card mdl-shadow--2dp">
   			<div class="mdl-card__title">
   				CPU
   			</div>
   			<div class="mdl-layout-spacer"></div>
-  			
-  			<canvas id="line" class="chart chart-line" chart-data="data"
-  				chart-labels="labels" chart-legend="true" chart-series="series"
+
+  			<canvas id="line" class="chart chart-line" chart-data="dataCPU"
+  				chart-labels="timeScale" chart-legend="false" chart-series="seriesCPU"
   				chart-click="onClick" >
 			</canvas>
 
   			<div class="mdl-layout-spacer"></div>
   			</div>
-		</div>
 
-		<div class="mdl-card mdl-shadow--2dp">
+  			<div class="mdl-card mdl-shadow--2dp" style="margin-top: 8px;">
   			<div class="mdl-card__title">
   				Memory
   			</div>
   			<div class="mdl-layout-spacer"></div>
   		
-  			<canvas id="line" class="chart chart-line" chart-data="data"
-  				chart-labels="labels" chart-legend="true" chart-series="series"
+  			<canvas id="line" class="chart chart-line" chart-data="dataMem"
+  				chart-labels="timeScale" chart-legend="false" chart-series="seriesMem"
   				chart-click="onClick" >
 			</canvas>
 			
   			<div class="mdl-layout-spacer"></div>
   			</div>
+  			</div>
+
+  			<div class="mdl-cell mdl-cell--5-col">
+  			<div class="mdl-card mdl-shadow--2dp">
+  			<div class="mdl-card__title">
+  				Disk
+  			</div>
+  			<div class="mdl-layout-spacer"></div>
+  		
+  			<canvas id="line" class="chart chart-line" chart-data="dataDisk"
+  				chart-labels="timeScale" chart-legend="false" chart-series="seriesDisk"
+  				chart-click="onClick" >
+			</canvas>
+			
+  			<div class="mdl-layout-spacer"></div>
+  			</div>
+
+        	
+
+        	</div>
+
+     
+
+
+       
 		</div>
+
 		<div class="mdl-grid">
 			<div class="mdl-cell mdl-cell--6-col">
 				<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
@@ -58,4 +97,3 @@
 
 
 </div>
-    </div>
