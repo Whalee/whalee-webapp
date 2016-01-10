@@ -8,5 +8,5 @@
         name 	  : String,
         owner     : String,
         cloneUrl : String,
-        deployed : String;
+        deployed : String
     });

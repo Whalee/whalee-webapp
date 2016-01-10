@@ -55,7 +55,7 @@ module.exports = function(app) {
         }
     });
 
-    app.get('/api/projects/added/:id') {
+    app.get('/api/projects/added/:id', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -69,7 +69,7 @@ module.exports = function(app) {
         }
     });
 
-    app.post('/api/projects/added') {
+    app.post('/api/projects/added', function(req, res) {
         if(req.user){
             Project.findOne({ 'githubID' : req.body.id }, function (err, project) {
                 if (err)
@@ -78,7 +78,7 @@ module.exports = function(app) {
                 var filtered = req.user.projects.filter(function (id) {return id == project.githubID;});
 
                 if (filtered.length == 0) {
-                    User.update({id : req.user.id)}, {
+                    User.update({id : req.user.id}, {
                         projects : req.user.projects.push(req.body.id)
                     }, function(err, numberAffected, rawResponse) {
                     });
@@ -100,28 +100,30 @@ module.exports = function(app) {
                     });
                     res.json(newProject);
                 }
+            });
         } else {
             res.redirect('/');
         }
-    }
+    });
 
-    app.post('/api/projects/deployed/:id') {
+    app.post('/api/projects/deployed/:id', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
                 if (err)
                     res.send(err);
 
-                Project.update({githubID : project.githubID)}, {
+                Project.update({githubID : project.githubID}, {
                     deployed : req.body.deploy
                 }, function(err, numberAffected, rawResponse) {
                 });
 
                 res.json(project); // return project in JSON format
             });
-
-    }
-
+        } else {
+            res.redirect('/');
+        }
+    });
 
     // github api ---------------------------------------------------------------------
 
