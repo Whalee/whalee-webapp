@@ -95,7 +95,7 @@ module.exports = function(app) {
     });
 
     // mika api -----------------------------------------------------------------------
-        /*
+        
     app.post('/api/project', function(req, res) {
         if(req.user) {
             // return user in JSON format
@@ -110,7 +110,6 @@ module.exports = function(app) {
                 },
                 method : 'POST' // do POST
             }
-        };
 
             https.request(options, function(res2) {
                 console.log('STATUS: ' + res2.statusCode);
@@ -132,7 +131,7 @@ module.exports = function(app) {
             res.redirect('/');  
         }
     });
-*/
+
 
 
     /*app.get('/api/projects' function(req, res) {

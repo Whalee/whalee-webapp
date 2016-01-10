@@ -12,10 +12,7 @@
     var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
     var passport = require('passport');
     var GitHubStrategy = require('passport-github').Strategy;
-
-
-    var GITHUB_CLIENT_ID = "aacc720e3bfb3b602fb4";
-    var GITHUB_CLIENT_SECRET = "adf5ece9f96e3a23c2b31404f0ee40c85b20c584";
+    var config = require("./config/config.json");
 
     // configuration ===============================================================
     mongoose.connect(database.url);     // connect to mongoDB database
@@ -36,9 +33,9 @@
     var User = require('./app/models/user');
 
     passport.use(new GitHubStrategy({
-        clientID: GITHUB_CLIENT_ID,
-        clientSecret: GITHUB_CLIENT_SECRET,
-        callbackURL: "http://localhost:3000/auth/callback"
+        clientID: config.github_id,
+        clientSecret: config.github_secret,
+        callbackURL: config.callbackurl
     },
     function (accessToken, refreshToken, profile, done) {
         process.nextTick(function () {
@@ -51,7 +48,6 @@
 
                 // if the user is found then log them in
                 if (user) {
-                    console.log("DANS SERVER.JS : " + accessToken);
                     User.update({id : user.id}, {
                         githubID : profile.id,
                         githubToken : accessToken,
