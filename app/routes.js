@@ -445,8 +445,8 @@ module.exports = function(app) {
                     console.log("HEADERS : " + JSON.stringify(options.headers));
                     console.log("DATA : " + JSON.stringify(options.data));
                     https.request(options, function(res2) {
-                        console.log('STATUS: ' + res2.statusCode);
-                        console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                        console.log('STATUS ENABLE: ' + res2.statusCode);
+                        //console.log('HEADERS: ' + JSON.stringify(res2.headers));
                         res2.setEncoding('utf8');
                         str = "";
                         res2.on('data', function (chunk) {
@@ -498,8 +498,8 @@ module.exports = function(app) {
                     console.log("PATH : " + options.path);
                     console.log("HEADERS : " + JSON.stringify(options.headers));
                     https.request(options, function(res2) {
-                        console.log('STATUS: ' + res2.statusCode);
-                        console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                        console.log('STATUS DISABLE: ' + res2.statusCode);
+                        //console.log('HEADERS: ' + JSON.stringify(res2.headers));
                         res2.setEncoding('utf8');
                         str = "";
                         res2.on('data', function (chunk) {
