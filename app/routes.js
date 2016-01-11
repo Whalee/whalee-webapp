@@ -30,7 +30,7 @@ module.exports = function(app) {
         res.sendfile('./views/index.html');
     });
 
-    app.get('/auth', passport.authenticate('github'));
+    app.get('/auth', passport.authenticate('github', {scope: ['user', 'repo', 'repo_deployment', 'public_repo', 'gist', 'admin:repo_hook']}));
 
     app.get('/auth/callback', 
         passport.authenticate('github', {successRedirect: '/home',
@@ -433,10 +433,10 @@ module.exports = function(app) {
                         path : '/repos/' + project.owner + '/' + project.name + '/hooks',
                         data : webhook,
                         headers: {
-                            "authorization" : "Bearer " +req.user.githubToken, 
+                            "authorization" : "Bearer " + req.user.githubToken, 
                             "user-agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
                             "Content-Type": "application/json",
-                            "Content-Length": Buffer.byteLength(webhook)
+                            "Content-Length": Buffer.byteLength(JSON.stringify(webhook))
                         },
                         method : 'POST'
                     };
@@ -523,7 +523,7 @@ module.exports = function(app) {
     });
 
     // push detected (webhooks)
-    app.get('/push', function(req, res) {
+    app.post('/push', function(req, res) {
         console.log("PUSH DETECTED");
         Project.findOne({githubID : req.body.repository.id}, function(err, project) {
             if (err)
