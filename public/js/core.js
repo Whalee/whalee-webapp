@@ -58,7 +58,13 @@ whalee.controller('mainController', function($scope,$http,$rootScope) {
                 $rootScope.projectList = data;
                 console.log(data);
                 if (data.length==0) {
-
+                  if ($scope.showProjects) {
+                    $scope.onProjectsClick();
+                  }
+                } else {
+                  if (!$scope.showProjects) {
+                    $scope.onProjectsClick();
+                  }
                 }
             })
             .error(function(data){
@@ -166,6 +172,7 @@ whalee.controller('projectsController', function($scope, $http, id, $rootScope, 
 
     $scope.message = 'This is the project: '+$scope.project.name;
     $scope.isDeployed = false;
+    $scope.hooked = ($scope.project.hooked=="0")?false:true;
 
     $scope.currentContainerId = "";
 
@@ -181,6 +188,24 @@ whalee.controller('projectsController', function($scope, $http, id, $rootScope, 
     $scope.dataMem = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
     $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+    $scope.autoDeploy = function () {
+      if ($scope.hooked) {
+        $http.post('/api/projects/deployed/'+$scope.project.githubID+'/enableautodeploy')
+            .success(function(data){
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+      } else {
+        $http.post('/api/projects/deployed/'+$scope.project.githubID+'/disableautodeploy')
+            .success(function(data){
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+      }
+    }
 
     $scope.onRemoveClick = function () {
       $http.delete('/api/projects/deployed/'+id)
