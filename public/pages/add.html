@@ -5,8 +5,6 @@
 
         <p>{{ message }}</p>
 
-       
-
         <table class="mdl-data-table  mdl-js-data-table mdl-data-table--selectable">
         	<thead>
         		<tr>
@@ -19,8 +17,13 @@
         	<tr ng-repeat = "project in projectListGitHub">
         		<td>
         		<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-2">
-  					<input type="checkbox" name="selectedProject[]" value="{{ project }}" ng-checked="selection.indexOf(project) > -1"
-    ng-click="toggleSelection(project)" class="mdl-checkbox__input" >
+  					<!--<input type="checkbox" name="selectedProject[]" value="{{ project }}" ng-checked="selection.indexOf(project) > -1" ng-click="toggleSelection(project)" class="mdl-checkbox__input" >-->
+			<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"  ng-click="onAddClick($index)" style="margin-top:-7px;" ng-hide="{{project.added}}">
+			Add
+			</button>
+			<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"  ng-click="onDeleteClick($index)" style="margin-top:-7px;" ng-show="{{project.added}}">
+			Delete
+			</button>
 				</label>
         		</td>
         		<td class="mdl-data-table__cell--non-numeric">  {{ project.name }} </td>
@@ -29,9 +32,9 @@
         	</tr>
         </table>
 
-        <div class="mdl-cell mdl-cell--6-col">
+        <!--<div class="mdl-cell">
 			<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"  ng-click="onAddClick()">
 			<b>Add</b>
 			</button>
-		</div>
+		</div>-->
     </div>
