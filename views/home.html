@@ -85,8 +85,8 @@
 
           <a class="mdl-navigation__link" ng-click="onProjectsClick()"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" >{{ projectsIcon }}</i>Your projects</a>
 
-          <div ng-show="showProjects">
-          <a class="mdl-navigation__link" ng-repeat = "project in projectList" href="#projects/{{ project.id }}"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" >trending_flat</i>{{ project.name }}</a>
+          <div style="background-color : #526b77" ng-show="showProjects">
+          <a class="mdl-navigation__link" ng-repeat = "project in projectList" href="#projects/{{ project.id }}"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" ></i>{{ project.name }}</a>
           </div>
 
           <a class="mdl-navigation__link" href="#add"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">add_circle</i>Add project</a>
