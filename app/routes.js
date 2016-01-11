@@ -46,16 +46,20 @@ module.exports = function(app) {
     // change sla for current user
     app.post('/api/sla/:id', function(req, res) {
         if(req.user){
-            User.update({id : req.user.id}, {
-                sla : req.params.id
-            });
-
             User.findOne({id : req.user.id}, function(err, user) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
                 if (err)
                     res.send(err);
 
-                res.json(user); // return project in JSON format
+                console.log("JE RECUPERE " + req.params.id + " EN ENTREE");
+                user.sla = req.params.id;
+
+                user.save(function(err) {
+                    if (err)
+                        res.send(err);
+
+                    res.json(user);
+                });
             });
         } else {
             res.redirect('/');     
