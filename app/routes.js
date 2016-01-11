@@ -60,7 +60,7 @@ module.exports = function(app) {
 
         var sessionId = sessionCookie.split( '.' )[0].replace( 's:', '' );
 
-        thinky.r.db( 'test' ).table( 'session' ).get( sessionId ).delete().run().then( function( result ) {
+        db( 'test' ).table( 'session' ).get( sessionId ).delete().run().then( function( result ) {
 
             if ( ! result.deleted ) {
 
