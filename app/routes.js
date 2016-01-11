@@ -442,7 +442,7 @@ module.exports = function(app) {
                     };
 
                     console.log("PATH : " + options.path);
-                    console.log("HEADERS : " + JSON.stringify(options.headers);
+                    console.log("HEADERS : " + JSON.stringify(options.headers));
                     console.log("DATA : " + JSON.stringify(options.data));
                     https.request(options, function(res2) {
                         console.log('STATUS: ' + res2.statusCode);
@@ -494,9 +494,9 @@ module.exports = function(app) {
                         },
                         method : 'DELETE'
                     };  
-                    
+
                     console.log("PATH : " + options.path);
-                    console.log("HEADERS : " + JSON.stringify(options.headers);
+                    console.log("HEADERS : " + JSON.stringify(options.headers));
                     https.request(options, function(res2) {
                         console.log('STATUS: ' + res2.statusCode);
                         console.log('HEADERS: ' + JSON.stringify(res2.headers));
