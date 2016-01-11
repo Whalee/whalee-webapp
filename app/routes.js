@@ -433,8 +433,8 @@ module.exports = function(app) {
                         path : '/repos/' + project.owner + '/' + project.name + '/hooks',
                         data : webhook,
                         headers: {
-                            "authorization" : "Bearer " + req.user.githubToken, 
-                            "user-agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
+                            "Authorization" : "Bearer " + req.user.githubToken, 
+                            "User-Agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
                             "Content-Type": "application/json",
                             "Content-Length": Buffer.byteLength(JSON.stringify(webhook))
                         },
@@ -442,6 +442,7 @@ module.exports = function(app) {
                     };
 
                     console.log("PATH : " + options.path);
+                    console.log("HEADES : " + options.headers);
                     https.request(options, function(res2) {
                         console.log('STATUS: ' + res2.statusCode);
                         console.log('HEADERS: ' + JSON.stringify(res2.headers));
