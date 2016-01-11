@@ -431,7 +431,7 @@ module.exports = function(app) {
                         // (no http/https !)
                         port : 443,
                         path : '/repos/' + project.owner + '/' + project.name + '/hooks',
-                        data : webhook,
+                        data : JSON.stringify(webhook),
                         headers : {
                             "Authorization" : "Bearer " + req.user.githubToken, 
                             "User-Agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
@@ -443,7 +443,7 @@ module.exports = function(app) {
 
                     console.log("PATH : " + options.path);
                     console.log("HEADERS : " + JSON.stringify(options.headers));
-                    console.log("DATA : " + JSON.stringify(options.data));
+                    console.log("DATA : " + options.data);
                     https.request(options, function(res2) {
                         console.log('STATUS ENABLE: ' + res2.statusCode);
                         //console.log('HEADERS: ' + JSON.stringify(res2.headers));
