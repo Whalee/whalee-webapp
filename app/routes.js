@@ -110,7 +110,6 @@ module.exports = function(app) {
                     newProject.owner = req.body.owner.login;
                     newProject.cloneUrl = req.body.clone_url;
                     newProject.deployed = '1';
-                    newProject.coreID = result.id;
                     newProject.save(function(err) {
                         if (err)
                             throw err;
