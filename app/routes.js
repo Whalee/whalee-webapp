@@ -3,6 +3,7 @@ var passport = require('passport');
 var User = require('./models/user');
 var Project = require('./models/project');
 var https = require('https');
+var http = require('http');
 
 
 // expose the routes to our app with module.exports
@@ -60,8 +61,8 @@ module.exports = function(app) {
         }
     });
 
-    // get a project added to whalee by ID
-    app.get('/api/projects/added/:id', function(req, res) {
+    // get a project deployed to whalee by ID
+    app.get('/api/projects/deployed/:id', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -75,8 +76,8 @@ module.exports = function(app) {
         }
     });
 
-    // get all projects added to whalee
-    app.get('/api/projects/added', function(req, res) {
+    // get all projects deployed to whalee
+    app.get('/api/projects/deployed', function(req, res) {
         if(req.user){
             var result = [];
             req.user.projects.forEach(function(element, index, array) {
@@ -94,8 +95,39 @@ module.exports = function(app) {
         }
     });
 
-    // add a project to whalee
-    app.post('/api/projects/added', function(req, res) {
+    // mika api ---------------------------------------------------------------------
+    app.post('/api/projects/fakedeploy', function(req, res) {
+        Project.findOne({ 'githubID' : req.body.id }, function (err, project) {
+            if (err)
+                return done(err);
+
+            if (project) { 
+                    res.send("project already deployed");                
+            } else {
+                    var newProject = new Project();
+                    newProject.githubID = req.body.id;
+                    newProject.name = req.body.name;
+                    newProject.owner = req.body.owner.login;
+                    newProject.cloneUrl = req.body.clone_url;
+                    newProject.deployed = '1';
+                    newProject.coreID = result.id;
+                    newProject.save(function(err) {
+                        if (err)
+                            throw err;
+                        return done(null, newProject);
+                    });
+
+                    User.update({id : req.user.id}, {
+                        projects : req.user.projects.push(req.body.id)
+                    }, function(err, numberAffected, rawResponse) {
+                    });
+                    res.json(newProject);
+            }
+        });
+    });
+
+    // deploy a project
+    app.post('/api/projects/deployed', function(req, res) {
         if(req.user){
             Project.findOne({ 'githubID' : req.body.id }, function (err, project) {
                 if (err)
@@ -110,21 +142,51 @@ module.exports = function(app) {
                     });
                 }
 
-                if (project) {
-                    res.json(project);
+                if (project) { 
+                    res.send("project already deployed");
                 } else {
-                    var newProject = new Project();
-                    newProject.githubID = req.body.id;
-                    newProject.name = req.body.name;
-                    newProject.owner = req.body.owner.login;
-                    newProject.cloneUrl = req.body.clone_url;
-                    newProject.deployed = '0';
-                    newProject.save(function(err) {
-                        if (err)
-                            throw err;
-                        return done(null, newUser);
-                    });
-                    res.json(newProject);
+
+                    var post = '{"user":' + req.body.owner.login + ',"project":' + req.body.name + '}';
+                    var options = {
+                        host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
+                        // (no http/https !)
+                        port : 80,
+                        path : '/project', // the rest of the url with parameters if needed
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Content-Length": Buffer.byteLength(req.body)
+                        },
+                        method : 'POST' // do POST
+                    }
+
+                    http.request(options, function(res2) {
+                        console.log('STATUS: ' + res2.statusCode);
+                        console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                        res2.setEncoding('utf8');
+                        str = "";
+                        res2.on('data', function (chunk) {
+                            str += chunk;
+                        });
+
+                        res2.on('end', function () {
+                            console.log(str);
+                            var result = JSON.parse(str);
+                            var newProject = new Project();
+                            newProject.githubID = req.body.id;
+                            newProject.name = req.body.name;
+                            newProject.owner = req.body.owner.login;
+                            newProject.cloneUrl = req.body.clone_url;
+                            newProject.deployed = '1';
+                            newProject.coreID = result.id;
+                            newProject.save(function(err) {
+                                if (err)
+                                    throw err;
+                                return done(null, newProject);
+                            });
+
+                            res.json(newProject);
+                        });
+                    }).on('error', function(e) {console.log("Got error: " + e.message);}).write(post).end(); 
                 }
             });
         } else {
@@ -132,24 +194,22 @@ module.exports = function(app) {
         }
     });
 
-    app.post('/api/projects/added/:id/deploy/', function(req, res) {
+    // redeploy a project
+    app.post('/api/projects/deployed/:id/redeploy/', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
                 if (err)
                     res.send(err);
 
-                Project.update({githubID : project.githubID}, {
-                    deployed : '1'
-                }, function(err, numberAffected, rawResponse) {
-                });
+                if (project == null)
+                    res.send("project doesn't exist");
 
-                var post = ''
                 var options = {
                     host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
                     // (no http/https !)
                     port : 80,
-                    path : '/project', // the rest of the url with parameters if needed
+                    path : '/project/' + project.coreID, // the rest of the url with parameters if needed
                     headers: {
                         "Content-Type": "application/json",
                         "Content-Length": Buffer.byteLength(req.body)
@@ -168,14 +228,67 @@ module.exports = function(app) {
 
                     res2.on('end', function () {
                         console.log(str);
-                        res.json(JSON.parse(str));
+                        var result = JSON.parse(str);
+                        res.json(result);
                     });
-                }).on('error', function(e) {console.log("Got error: " + e.message);}).write(req.body).end();   
+                }).on('error', function(e) {console.log("Got error: " + e.message);}).end();   
             });
         } else {
             res.redirect('/');
         }
     });
+/*    app.get('/api/projects/deployed/:id/data', function(req, res) {
+        if(req.user){
+            Project.findOne({githubID : req.params.id}, function(err, project) {
+                // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+                if (err)
+                    res.send(err);
+
+                if (project) { 
+                    var options = {
+                        host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
+                        // (no http/https !)
+                        port : 80,
+                        path : '/project/' + project.coreID, // the rest of the url with parameters if needed
+                        method : 'GET' // do POST
+                    }
+
+                    http.request(options, function(res2) {
+                        console.log('STATUS: ' + res2.statusCode);
+                        console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                        res2.setEncoding('utf8');
+                        str = "";
+                        res2.on('data', function (chunk) {
+                            str += chunk;
+                        });
+
+                        res2.on('end', function () {
+                            console.log(str);
+                            var ct = JSON.parse(str);
+                            var data = [];
+                            for(var i = 0 ; i < ct.containers.length ; i++) {
+                                options.path = '/container' + ct.containers[i];
+                                http.request(options, function(res3) {
+                                    console.log('STATUS: ' + res3.statusCode);
+                                    console.log('HEADERS: ' + JSON.stringify(res3.headers));
+                                    res3.setEncoding('utf8');
+                                    str = "";
+                                    res3.on('data', function (chunk) {
+                                        str += chunk;
+                                    });
+
+                            }
+                        });
+                    }).on('error', function(e) {console.log("Got error: " + e.message);}).end();
+                } else {
+                    res.send("project doesn't exist")
+                }   
+            });
+        } else {
+            res.redirect('/');
+        }
+    }); */
+    
 /*
     app.get('api/containers/:id', function(req, res) {
         if(req.user){
@@ -259,7 +372,7 @@ module.exports = function(app) {
     });
 
     // mika api -----------------------------------------------------------------------
-        
+  /*      
     app.post('/api/project/deployed', function(req, res) {
         if(req.user) {
             
@@ -296,7 +409,7 @@ module.exports = function(app) {
         }
     });
 
-
+*/
 
     /*app.get('/api/projects' function(req, res) {
         if(req.user) {
