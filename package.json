@@ -12,6 +12,7 @@
     "method-override": "~2.1.2",
     "express-session": "1.4.0",
     "cookie-parser" : "",
+    "http" : "",
     "https"      : "",
     "passport"   : "",
     "passport-github" : ""

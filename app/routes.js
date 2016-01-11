@@ -132,7 +132,7 @@ module.exports = function(app) {
         }
     });
 
-    app.post('/api/projects/deployed/:id', function(req, res) {
+    app.post('/api/projects/added/:id/deploy/', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -140,11 +140,37 @@ module.exports = function(app) {
                     res.send(err);
 
                 Project.update({githubID : project.githubID}, {
-                    deployed : req.body.deploy
+                    deployed : '1'
                 }, function(err, numberAffected, rawResponse) {
                 });
 
-                res.json(project); // return project in JSON format
+                var post = ''
+                var options = {
+                    host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
+                    // (no http/https !)
+                    port : 80,
+                    path : '/project', // the rest of the url with parameters if needed
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Content-Length": Buffer.byteLength(req.body)
+                    },
+                    method : 'POST' // do POST
+                }
+
+                http.request(options, function(res2) {
+                    console.log('STATUS: ' + res2.statusCode);
+                    console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                    res2.setEncoding('utf8');
+                    str = "";
+                    res2.on('data', function (chunk) {
+                        str += chunk;
+                    });
+
+                    res2.on('end', function () {
+                        console.log(str);
+                        res.json(JSON.parse(str));
+                    });
+                }).on('error', function(e) {console.log("Got error: " + e.message);}).write(req.body).end();   
             });
         } else {
             res.redirect('/');
@@ -234,7 +260,7 @@ module.exports = function(app) {
 
     // mika api -----------------------------------------------------------------------
         
-    /*app.post('/api/project/deployed', function(req, res) {
+    app.post('/api/project/deployed', function(req, res) {
         if(req.user) {
             
             var options = {
@@ -263,14 +289,14 @@ module.exports = function(app) {
                     res.json(JSON.parse(str));
                 });
 
-            }).on('error', function(e) {console.log("Got error: " + e.message);}).end();      
+            }).on('error', function(e) {console.log("Got error: " + e.message);}).write(req.body).end();      
 
         } else {
             res.redirect('/');  
         }
     });
 
-*/
+
 
     /*app.get('/api/projects' function(req, res) {
         if(req.user) {
