@@ -111,15 +111,15 @@ module.exports = function(app) {
                     newProject.cloneUrl = req.body.clone_url;
                     newProject.deployed = '1';
                     newProject.save(function(err) {
-                        if (err)
-                            throw err;
-                        return done(null, newProject);
+                    if (err)
+                        throw err;
                     });
 
                     User.update({id : req.user.id}, {
                         projects : req.user.projects.push(req.body.id)
                     }, function(err, numberAffected, rawResponse) {
                     });
+                    
                     res.json(newProject);
             }
         });
