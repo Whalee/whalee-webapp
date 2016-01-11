@@ -37,10 +37,10 @@ module.exports = function(app) {
         passport.authenticate('github', {successRedirect: '/home',
                         failureRedirect:'/error'}));
 
-    app.get('/logout', function(req, res) { 
-        req.logOut(); 
-        console.log( "logout"); 
-        res.send(401, "unauthorized"); 
+    app.get('/logout', function (req, res){
+        req.session.destroy(function (err) {
+            res.redirect('/'); //Inside a callback… bulletproof!
+        });
     });
 
     // local api ----------------------------------------------------------------------
