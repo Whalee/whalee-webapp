@@ -73,36 +73,35 @@ whalee.controller('mainController', function($scope,$http) {
 
 whalee.controller('slaController', function($scope,$http) {
     $scope.message = "Please, choose your SLA.";
+
+    $scope.isBronze = false;
+    $scope.isSilver = false;
+    $scope.isGold = false;
     $http.get('/api/user/')
             .success(function(data){
                 $scope.userInfo = data;
                 console.log(data);
-<<<<<<< HEAD
-=======
+                if(($scope.userInfo.sla) == "1"){
+        $scope.isBronze = true;
+    }else if($scope.userInfo.sla == "2"){
+        $scope.isSilver = true;
+
+
+    }else if($scope.userInfo.sla == "3"){
+        $scope.isGold = true;
+
+
+    }else if($scope.userInfo.sla == "3"){
+        $scope.isGold = true;
+    }
+
             })
             .error(function(data){
                 
                 console.log('Error: '+data);
             });
->>>>>>> 2da05d5ccd440409374379a6545bb1efb30f860d
 
-    $scope.isBronze = false;
-    $scope.isSilver = false;
-    $scope.isGold = false;
-    if(($scope.userInfo.sla) == "1"){
-        $scope.isBronze = true;
-    }else if($scope.userInfo.sla == "2"){
-        $scope.isSilver = true;
-<<<<<<< HEAD
-
-    }else if($scope.userInfo.sla == "3"){
-        $scope.isGold = true;
-
-=======
-    }else if($scope.userInfo.sla == "3"){
-        $scope.isGold = true;
->>>>>>> 2da05d5ccd440409374379a6545bb1efb30f860d
-    }
+    
 
     $scope.onBronzeClick = function(){
         $scope.isBronze = true;
@@ -154,7 +153,12 @@ whalee.controller('projectsController', function($scope, $http, id) {
     $scope.message = 'This is the project: '+id;
     $scope.isDeployed = false;
 
-    $scope.timeScale = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+    $scope.currentContainerId = "";
+
+    $scope.timeScaleCPU = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+    $scope.timeScaleMem = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+    $scope.timeScaleDisk = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+
     $scope.seriesCPU = ['CPU'];
     $scope.seriesMem = ['Memory'];
     $scope.seriesDisk = ['Disk'];
@@ -164,46 +168,84 @@ whalee.controller('projectsController', function($scope, $http, id) {
 
     $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
+    $scope.containers = [{
+    id: "Container 1",
+    proc: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15,14,12,13,4,3,3,3,3],
+    }, memory: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+    }, disk: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+ 
+    }
+}, {
+    id: "Contaiener 2",
+    proc: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+    }, memory: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+    }, disk: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+    }
+}];
 
-    $scope.containers = [{id : "C1"},{id : "C2"},{id : "C3"},{id : "C4"}];
 
+function getTimeScale(size){
+        console.log("On rentre dans le getTimeScale.");
 
-    $scope.onContainerClick = function(id){
-        console.log("On click sur le container "+id);
-        if(id=="C1"){
-            $scope.dataCPU = [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]];
+    var list = [];
 
-            $scope.dataMem = [[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]];
+    for(var i = (size-1); i>=0; i--){
+        list.push(i);
+    }
 
-            $scope.dataDisk = [[10, 10, 10, 10, 10, 10, 10, 10, 10, 10]];
+    return list;
 
+};
 
-        }else if (id=="C2") {
+function retrieveData(){
+    console.log("On rentre dans le retrieveData.");
+    console.log("current ID : "+ $scope.currentContainerId);
 
-            $scope.dataCPU = [[5, 5, 5, 5, 10, 10, 8, 7, 6, 5]];
+    for(var i = 0; i<$scope.containers.length; i++){
+            console.log("ID visité: "+ $scope.containers[i].id);
 
-            $scope.dataMem = [[4, 4, 7, 4, 4, 7, 4, 4, 7, 4]];
+        if($scope.containers[i].id == $scope.currentContainerId){
+            console.log("On a trouver un id qui est "+ $scope.containers[i].id);
 
-            $scope.dataDisk = [[4, 4, 5, 5, 6, 6, 7, 7, 8, 8]];
+            $scope.timeScaleCPU = getTimeScale($scope.containers[i].proc.hist.length);
+            console.log($scope.containers[i] +" "+ i);
+            $scope.dataCPU = [];
+            var temp = $scope.containers[i].proc.hist;
+            $scope.dataCPU.push(temp);
 
-        }else if (id=="C3") {
+            $scope.timeScaleMem = getTimeScale($scope.containers[i].memory.hist.length);
+            $scope.dataMem = [];
+            $scope.dataMem.push($scope.containers[i].memory.hist);
 
-            $scope.dataCPU = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-            $scope.dataMem = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-            $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-
-        }else if (id=="C4") {
-
-            $scope.dataCPU = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-            $scope.dataMem = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-            $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
+            $scope.timeScaleDisk = getTimeScale($scope.containers[i].disk.hist.length);
+            $scope.dataDisk = [];
+            $scope.dataDisk.push($scope.containers[i].disk.hist);
         }
+    }
+}
+
+    $scope.onContainerClick = function(containerId){
+        console.log("On click sur le container "+id);
+        $scope.currentContainerId = containerId;
+        retrieveData();
 
     }
 
