@@ -48,11 +48,9 @@ whalee.controller('mainController', function($scope,$http,$rootScope) {
     $scope.formData = {};
     $scope.showProjects = false;
     $scope.projectsIcon = "keyboard_arrow_right";
-    //$scope.projectList = [{name : "projet1", id : "id1"},{name : "projet2", id : "id2"}];
     $scope.projectList = [];
 
     $rootScope.$on('updateProjectList', function () {
-      //$scope.projectList[2]={name:"project3",id:"id3"};
       getProjectsDeployed();
     });
 
@@ -68,6 +66,7 @@ whalee.controller('mainController', function($scope,$http,$rootScope) {
     }
 
     function getProjectsDeployed() {
+      console.log('getProjectsDeployed');
       $http.get('/api/projects/deployed')
             .success(function(data){
                 $scope.projectList = data;
@@ -168,7 +167,7 @@ whalee.controller('slaController', function($scope,$http) {
     };
 });
 
-whalee.controller('projectsController', function($scope, $http, id) {
+whalee.controller('projectsController', function($scope, $http, id, $rootScope) {
     $scope.message = 'This is the project: '+id;
     $scope.isDeployed = false;
 
@@ -188,7 +187,7 @@ whalee.controller('projectsController', function($scope, $http, id) {
     $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
     $scope.onRemoveClick = function () {
-      $http.delete('/api/projects/'+id)
+      $http.delete('/api/projects/deployed/'+id)
             .success(function(data){
                 //$scope.projects = data;
                 console.log(data);
