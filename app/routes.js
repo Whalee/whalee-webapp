@@ -27,7 +27,8 @@ module.exports = function(app) {
 
     // index
     app.get('/', function(req, res) {
-        res.redirect('http://whalee.io');
+        //res.redirect('http://whalee.io');
+        res.sendfile('./views/index.html');
     });
 
     app.get('/auth', passport.authenticate('github', {scope: ['user', 'repo', 'repo_deployment', 'public_repo', 'gist', 'admin:repo_hook']}));
