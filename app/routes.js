@@ -512,14 +512,7 @@ module.exports = function(app) {
                     https.request(options, function(res2) {
                         console.log('STATUS DISABLE: ' + res2.statusCode);
                         //console.log('HEADERS: ' + JSON.stringify(res2.headers));
-                        res2.setEncoding('utf8');
-                        str = "";
-                        res2.on('data', function (chunk) {
-                            str += chunk;
-                        });
-
                         res2.on('end', function () {
-                            result = JSON.parse(str);
                             project.hooked = '0';
                             project.webhookID = '0';
                             project.save(function(err) {
@@ -527,7 +520,7 @@ module.exports = function(app) {
                                     throw err;
                             });
                             console.log(result);
-                            res.json(result);
+                            res.status(200).send();
                         });
                     }).on('error', function(e) {console.log("Got error: " + e.message);}).end();      
                 } else {
