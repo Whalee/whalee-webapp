@@ -73,26 +73,36 @@ whalee.controller('mainController', function($scope,$http) {
 
 whalee.controller('slaController', function($scope,$http) {
     $scope.message = "Please, choose your SLA.";
+    
+    $scope.isBronze = false;
+    $scope.isSilver = false;
+    $scope.isGold = false;
+
     $http.get('/api/user/')
             .success(function(data){
                 $scope.userInfo = data;
                 console.log(data);
+                console.log("USER INFO AVANT LE IF : " + $scope.userInfo.sla);
+
+    if(($scope.userInfo.sla) == "1"){
+        $scope.isBronze = true;
+        console.log("ON EST BRONZE DE BASE !");
+    }else if($scope.userInfo.sla == "2"){
+        $scope.isSilver = true;
+        console.log("ON EST SILVER DE BASE !");
+
+    }else if($scope.userInfo.sla == "3"){
+        $scope.isGold = true;
+        console.log("ON EST GOLD DE BASE !");
+
+    }
             })
             .error(function(data){
                 
                 console.log('Error: '+data);
             });
 
-    $scope.isBronze = false;
-    $scope.isSilver = false;
-    $scope.isGold = false;
-    if(($scope.userInfo.sla) == "1"){
-        $scope.isBronze = true;
-    }else if($scope.userInfo.sla == "2"){
-        $scope.isSilver = true;
-    }else if($scope.userInfo.sla == "3"){
-        $scope.isGold = true;
-    }
+    
 
     $scope.onBronzeClick = function(){
         $scope.isBronze = true;
