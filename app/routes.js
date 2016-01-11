@@ -27,7 +27,7 @@ module.exports = function(app) {
 
     // index
     app.get('/', function(req, res) {
-        res.sendfile('./views/index.html');
+        res.redirect('http://whalee.io');
     });
 
     app.get('/auth', passport.authenticate('github', {scope: ['user', 'repo', 'repo_deployment', 'public_repo', 'gist', 'admin:repo_hook']}));
@@ -35,6 +35,12 @@ module.exports = function(app) {
     app.get('/auth/callback', 
         passport.authenticate('github', {successRedirect: '/home',
                         failureRedirect:'/error'}));
+
+    app.post('/logout', function(req, res) { 
+        req.logOut(); 
+        console.log( "logout"); 
+        res.send(401, "unauthorized"); 
+    });
 
     // local api ----------------------------------------------------------------------
 
@@ -190,12 +196,13 @@ module.exports = function(app) {
                 if (project) { 
                     res.send("project already deployed");
                 } else {
-
-                    var post = '{"user":' + req.body.owner.login + ',"project":' + req.body.name + '}';
                     var options = {
                         host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
                         // (no http/https !)
                         port : 80,
+                        data : { "user" : req.body.owner.login,
+                                 "project" : req.body.name
+                               },
                         path : '/project', // the rest of the url with parameters if needed
                         headers: {
                             "Content-Type": "application/json",
@@ -232,7 +239,7 @@ module.exports = function(app) {
 
                             res.json(newProject);
                         });
-                    }).on('error', function(e) {console.log("Got error: " + e.message);}).write(post).end(); 
+                    }).on('error', function(e) {console.log("Got error: " + e.message);}).end(); 
                 }
             });
         } else {
@@ -257,8 +264,6 @@ module.exports = function(app) {
                     port : 80,
                     path : '/project/' + project.coreID, // the rest of the url with parameters if needed
                     headers: {
-                        "Content-Type": "application/json",
-                        "Content-Length": Buffer.byteLength(req.body)
                     },
                     method : 'POST' // do POST
                 }
@@ -425,26 +430,31 @@ module.exports = function(app) {
                 if (err)
                     res.send(err);
 
-                if (project) {            
+                if (project) {  
+
+                    var post_data = JSON.stringify(webhook);
+
                     var options = {
                         host : 'api.github.com', // here only the domain name
                         // (no http/https !)
                         port : 443,
                         path : '/repos/' + project.owner + '/' + project.name + '/hooks',
-                        data : webhook,
-                        headers: {
-                            "authorization" : "Bearer " + req.user.githubToken, 
-                            "user-agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
-                            "Content-Type": "application/json",
-                            "Content-Length": Buffer.byteLength(JSON.stringify(webhook))
+                        //data : JSON.stringify(webhook),
+                        headers : {
+                            "Authorization" : "Bearer " + req.user.githubToken, 
+                            "User-Agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
+                            "Content-Type" : "application/json",
+                            "Content-Length" : Buffer.byteLength(post_data)
                         },
                         method : 'POST'
                     };
 
                     console.log("PATH : " + options.path);
-                    https.request(options, function(res2) {
-                        console.log('STATUS: ' + res2.statusCode);
-                        console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                    console.log("HEADERS : " + JSON.stringify(options.headers));
+                    console.log("DATA : " + options.data);
+                    var post_req = https.request(options, function(res2) {
+                        console.log('STATUS ENABLE: ' + res2.statusCode);
+                        //console.log('HEADERS: ' + JSON.stringify(res2.headers));
                         res2.setEncoding('utf8');
                         str = "";
                         res2.on('data', function (chunk) {
@@ -462,7 +472,11 @@ module.exports = function(app) {
                             console.log(result);
                             res.json(result);
                         });
-                    }).on('error', function(e) {console.log("Got error: " + e.message);}).end();      
+                    }).on('error', function(e) {console.log("Got error: " + e.message);});
+
+                    post_req.write(post_data);
+                    post_req.end();
+
                 } else {
                     res.status(404).send("project doesn't exist");
                 }
@@ -487,15 +501,17 @@ module.exports = function(app) {
                         port : 443,
                         path : '/repos/' + project.owner + '/' + project.name + '/hooks/' + project.webhookID,
                         headers: {
-                            "authorization" : "Bearer " + req.user.githubToken, 
-                            "user-agent" : "Whalee-webapp" // GitHub is happy with a unique user agent 
+                            "Authorization" : "Bearer " + req.user.githubToken, 
+                            "User-Agent" : "Whalee-webapp" // GitHub is happy with a unique user agent 
                         },
                         method : 'DELETE'
                     };  
 
+                    console.log("PATH : " + options.path);
+                    console.log("HEADERS : " + JSON.stringify(options.headers));
                     https.request(options, function(res2) {
-                        console.log('STATUS: ' + res2.statusCode);
-                        console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                        console.log('STATUS DISABLE: ' + res2.statusCode);
+                        //console.log('HEADERS: ' + JSON.stringify(res2.headers));
                         res2.setEncoding('utf8');
                         str = "";
                         res2.on('data', function (chunk) {
