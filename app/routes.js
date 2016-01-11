@@ -435,7 +435,7 @@ module.exports = function(app) {
                         headers: {
                             "authorization" : "Bearer " + req.user.githubToken, 
                             "user-agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
                             "Content-Length": Buffer.byteLength(JSON.stringify(webhook))
                         },
                         method : 'POST'
