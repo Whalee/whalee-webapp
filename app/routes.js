@@ -100,6 +100,41 @@ module.exports = function(app) {
         }
     });
 
+    app.delete('/api/projects/deployed/:id', function(req, res) {
+        if(req.user){
+            Project.findOne({githubID : req.params.id}, function(err, project) {
+                // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+                if (err)
+                    res.send(err);
+                if (project) {
+                    for(var i = 0 ; i < req.user.projects.length ; i++) {
+                        if(req.user.projects[i] == project.githubID) {
+                            req.user.projects.splice(i, 1);
+                            req.user.save(function(err) {
+                                if (err)
+                                    throw err;
+                            });
+                            break;
+                        }
+                    }
+                    
+                    Project.remove({
+                        githubID : req.params.id
+                    }, function(err, user) {
+                        if (err)
+                            res.send(err);
+                    });
+
+                    res.status(200).send(); // return project in JSON format
+                } else {
+                    res.status(404).send("Project not found");
+                }
+            });      
+        } else {
+            res.redirect('/');
+        }
+    });
+
     // mika api ---------------------------------------------------------------------
     app.post('/api/projects/fakedeploy', function(req, res) {
         Project.findOne({ 'githubID' : req.body.id }, function (err, project) {
