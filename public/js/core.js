@@ -48,10 +48,12 @@ whalee.controller('mainController', function($scope,$http,$rootScope) {
     $scope.formData = {};
     $scope.showProjects = false;
     $scope.projectsIcon = "keyboard_arrow_right";
-    $scope.projectList = [{name : "projet1", id : "id1"},{name : "projet2", id : "id2"}];
+    //$scope.projectList = [{name : "projet1", id : "id1"},{name : "projet2", id : "id2"}];
+    $scope.projectList = [];
 
     $rootScope.$on('updateProjectList', function () {
-      $scope.projectList[2]={name:"project3",id:"id3"};
+      //$scope.projectList[2]={name:"project3",id:"id3"};
+      getProjectsDeployed();
     });
 
     $scope.onProjectsClick = function(){
@@ -64,16 +66,28 @@ whalee.controller('mainController', function($scope,$http,$rootScope) {
         }
         console.log($scope.showProjects);
     }
+
+    function getProjectsDeployed() {
+      $http.get('/api/projects/deployed')
+            .success(function(data){
+                $scope.projectList = data;
+                console.log(data);
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+    }
+
+    getProjectsDeployed();
+
     $http.get('/api/user/')
             .success(function(data){
                 $scope.userInfo = data;
                 console.log(data);
             })
             .error(function(data){
-                
                 console.log('Error: '+data);
             });
-
 });
 
 whalee.controller('slaController', function($scope,$http) {
