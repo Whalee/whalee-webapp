@@ -436,7 +436,7 @@ module.exports = function(app) {
                             "authorization" : "Bearer " + req.user.githubToken, 
                             "user-agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
                             "Content-Type": "application/json",
-                            "Content-Length": Buffer.byteLength(webhook)
+                            "Content-Length": Buffer.byteLength(JSON.stringify(webhook))
                         },
                         method : 'POST'
                     };
@@ -523,7 +523,7 @@ module.exports = function(app) {
     });
 
     // push detected (webhooks)
-    app.get('/push', function(req, res) {
+    app.post('/push', function(req, res) {
         console.log("PUSH DETECTED");
         Project.findOne({githubID : req.body.repository.id}, function(err, project) {
             if (err)
