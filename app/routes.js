@@ -82,6 +82,8 @@ module.exports = function(app) {
             var result = [];
             console.log("user : " + req.user);
             var c = req.user.projects.length;
+            if(c == 0)
+                res.json(result);
             req.user.projects.forEach(function(element, index, array) {
                 Project.findOne({githubID : element}, function(err, project) {
                     if (err)
@@ -117,7 +119,7 @@ module.exports = function(app) {
                             break;
                         }
                     }
-                    
+
                     Project.remove({
                         githubID : req.params.id
                     }, function(err, user) {
