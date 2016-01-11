@@ -1,22 +1,7 @@
 // public/core.js
 
-
-
-        // include ngRoute for all our routing needs
+    // include ngRoute for all our routing needs
     var whalee = angular.module('whalee', ['chart.js','ngRoute']);
-
-
-//    whalee.config(['ChartJsProvider', function (ChartJsProvider) {
-        // Configure all charts
-//        ChartJsProvider.setOptions({
-//          colours: ['#FF5252', '#FF8A80'],
-//          responsive: false
-//        });
-        // Configure all line charts
-//        ChartJsProvider.setOptions('Line', {
-//          datasetFill: false
-//        });
-//    }])
 
     // configure our routes
     whalee.config(function($routeProvider) {
@@ -70,7 +55,11 @@ whalee.controller('mainController', function($scope,$http,$rootScope) {
       $http.get('/api/projects/deployed')
             .success(function(data){
                 $scope.projectList = data;
+                $rootScope.projectList = data;
                 console.log(data);
+                if (data.length==0) {
+
+                }
             })
             .error(function(data){
                 console.log('Error: '+data);
@@ -167,8 +156,15 @@ whalee.controller('slaController', function($scope,$http) {
     };
 });
 
-whalee.controller('projectsController', function($scope, $http, id, $rootScope) {
-    $scope.message = 'This is the project: '+id;
+whalee.controller('projectsController', function($scope, $http, id, $rootScope, $location) {
+    $scope.project = null;
+    for (i in $rootScope.projectList) {
+      if ($rootScope.projectList[i].githubID==id) {
+        $scope.project = $rootScope.projectList[i];
+      }
+    }
+
+    $scope.message = 'This is the project: '+$scope.project.name;
     $scope.isDeployed = false;
 
     $scope.currentContainerId = "";
@@ -189,9 +185,8 @@ whalee.controller('projectsController', function($scope, $http, id, $rootScope) 
     $scope.onRemoveClick = function () {
       $http.delete('/api/projects/deployed/'+id)
             .success(function(data){
-                //$scope.projects = data;
-                console.log(data);
                 $rootScope.$broadcast('updateProjectList');
+                $location.path('/sla');
             })
             .error(function(data){
                 console.log('Error: '+data);
@@ -296,100 +291,53 @@ function retrieveData(){
 
 whalee.controller('addController', function($scope, $http, $rootScope) {
     $scope.message = 'Please, select the projects to add.';
-    $scope.projectToAdd = [];
+    $scope.projectListGitHub = [];
 
-    $scope.toggleSelection = function toggleSelection(project) {
-        var idx = $scope.projectToAdd.indexOf(project);
-
-        // is currently selected
-        if (idx > -1) {
-          $scope.projectToAdd.splice(idx, 1);
-        }
-
-        // is newly selected
-        else {
-          $scope.projectToAdd.push(project);
-        }
-    };
-
-    $scope.onAddClick = function(){
-        console.log($scope.projectToAdd);
-        $http.post('/api/projects/fakedeploy', $scope.projectToAdd[0])
+    $scope.onAddClick = function(index){
+        console.log($scope.projectListGitHub);
+        $http.post('/api/projects/fakedeploy', $scope.projectListGitHub[index])
             .success(function(data){
-                //$scope.projectListGitHub = data;
                 console.log(data);
                 $rootScope.$broadcast('updateProjectList');
+                updateList();
             })
             .error(function(data){
                 console.log('Error: '+data);
             });
     }
 
-    $http.get('/api/projects/')
+    $scope.onDeleteClick = function(index){
+        console.log($scope.projectListGitHub);
+        $http.delete('/api/projects/deployed/'+$scope.projectListGitHub[index].id)
+            .success(function(data){
+                console.log(data);
+                $rootScope.$broadcast('updateProjectList');
+                updateList();
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+    }
+
+    function updateList() {
+      $http.get('/api/projects/')
             .success(function(data){
                 $scope.projectListGitHub = data;
-                console.log(data);
+                var tab = $rootScope.projectList;
+                for (i in $scope.projectListGitHub) {
+                  $scope.projectListGitHub[i].added=false;
+
+                  for (j in tab) {
+                    if (tab[j].githubID==$scope.projectListGitHub[i].id) {
+                      $scope.projectListGitHub[i].added=true;
+                    }
+                  }
+                }
             })
             .error(function(data){
                 console.log('Error: '+data);
             });
+    }
+
+    updateList();
 });
-
-/*function mainController($scope, $http) {
-
-    $scope.message = "We are in the home"
-    $scope.formData = {};
-    $http.get('/api/user/')
-            .success(function(data){
-                $scope.userInfo = data;
-                console.log(data);
-            })
-            .error(function(data){
-                
-                console.log('Error: '+data);
-            });
-
-}*/
-
-
-
-
-    /*$scope.addUser = function() {
-        console.log("ICI");
-        $http.post('/api/users', $scope.formData)
-            .success(function(data){
-                $scope.userInfo = data;
-                console.log(data);
-            })
-            .error(function(data){
-                
-                console.log('Error: ' + data);
-            });
-    };
-
-    $scope.removeUser = function() {
-        $http.delete('/api/users/' + 'user1')
-            .success(function(data){
-                $scope.userInfo = data;
-                console.log(data);
-            })
-            .error(function(data){
-                
-                console.log('Error: '+data);
-            });
-    };
-
-    $scope.getUser = function() {
-        $http.get('/api/lolcat/')
-            .success(function(data){
-                $scope.userInfo = data;
-                console.log(data);
-            })
-            .error(function(data){
-                
-                console.log('Error: '+data);
-            });
-    };*/
-
-    
-/*}*/
