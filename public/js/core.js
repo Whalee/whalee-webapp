@@ -86,7 +86,7 @@ whalee.controller('slaController', function($scope,$http) {
     $scope.isBronze = false;
     $scope.isSilver = false;
     $scope.isGold = false;
-    if(($scope.userInfo.sla) == "1"){
+    if($scope.userInfo.sla == "1"){
         $scope.isBronze = true;
     }else if($scope.userInfo.sla == "2"){
         $scope.isSilver = true;
