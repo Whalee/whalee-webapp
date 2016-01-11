@@ -441,6 +441,7 @@ module.exports = function(app) {
                         method : 'POST'
                     };
 
+                    options.headers = JSON.stringify(options.headers);
                     console.log("PATH : " + options.path);
                     console.log("HEADERS : " + JSON.stringify(options.headers));
                     console.log("DATA : " + options.data);
