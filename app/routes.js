@@ -81,16 +81,20 @@ module.exports = function(app) {
         if(req.user){
             var result = [];
             console.log("user : " + req.user);
+            var c = req.user.projects.length;
             req.user.projects.forEach(function(element, index, array) {
                 Project.findOne({githubID : element}, function(err, project) {
                     if (err)
                         res.send(err);
 
-                    result.push(project);                   
+                    result.push(project); 
+                    c--;
+                    if(c == 0) {
+                        console.log("return : " + result);
+                        res.json(result);
+                    }                
                 });
             });
-            console.log("return : " + result);
-            res.json(result);
         } else {
             res.redirect('/');
         }
