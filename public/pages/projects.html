@@ -13,13 +13,13 @@
 
         <div class="mdl-grid">
         	<div class="mdl-cell mdl-cell--2-col">
-        		<table class="mdl-data-table  mdl-js-data-table mdl-data-table--selectable">
+        		<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
         	<thead>
         		<tr>
         			<th class="mdl-data-table__cell--non-numeric">Containers list</th>
         		</tr>
         	</thead>
-        	<tr ng-repeat = "container in containers" ng-click="onContainerClick(container.id)">
+        	<tr ng-repeat = "container in containers" ng-click="onContainerClick(container.id,$index)">
         		<td class="mdl-data-table__cell--non-numeric">  {{ container.id }} </td>
         	</tr>
         </table>
