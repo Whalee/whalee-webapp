@@ -103,12 +103,6 @@ module.exports = function(app) {
                 return done(err);
 
             if (project) { 
-                    req.user.projects.push(req.body.id);
-                    req.user.save(function(err) {
-                    if (err)
-                        throw err;
-                    });
-)
                     res.send("project already deployed");                
             } else {
                     var newProject = new Project();
