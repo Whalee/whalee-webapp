@@ -433,10 +433,10 @@ module.exports = function(app) {
                         path : '/repos/' + project.owner + '/' + project.name + '/hooks',
                         data : webhook,
                         headers: {
-                            "Authorization" : "Bearer " + req.user.githubToken, 
-                            //"user-agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
+                            "authorization" : "Bearer " + req.user.githubToken, 
+                            "user-agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
                             "Content-Type": "application/json"
-                            //"Content-Length": Buffer.byteLength(JSON.stringify(webhook))
+                            "Content-Length": Buffer.byteLength(JSON.stringify(webhook))
                         },
                         method : 'POST'
                     };
