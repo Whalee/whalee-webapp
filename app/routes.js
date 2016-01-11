@@ -50,8 +50,96 @@ module.exports = function(app) {
                 sla : req.params.id
             });
             res.json(req.user); // return user in JSON format
-        }else{
+        } else {
             res.redirect('/');     
+        }
+    });
+
+    app.get('/api/projects/added/:id', function(req, res) {
+        if(req.user){
+            Project.findOne({githubID : req.params.id}, function(err, project) {
+                // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+                if (err)
+                    res.send(err);
+
+                res.json(project); // return project in JSON format
+            });
+        } else {
+            res.redirect('/');
+        }
+    });
+
+    app.get('/api/projects/added', function(req, res) {
+        if(req.user){
+            var result = [];
+            req.user.projects.forEach(function(element, index, array) {
+                Project.findOne({githubID : element}, function(err, project) {
+                    if (err)
+                        res.send(err);
+
+                    result.push(project);                   
+                });
+            });
+
+            res.json(result);
+        } else {
+            res.redirect('/');
+        }
+    });
+
+    app.post('/api/projects/added', function(req, res) {
+        if(req.user){
+            Project.findOne({ 'githubID' : req.body.id }, function (err, project) {
+                if (err)
+                    return done(err);
+
+                var filtered = req.user.projects.filter(function (id) {return id == project.githubID;});
+
+                if (filtered.length == 0) {
+                    User.update({id : req.user.id}, {
+                        projects : req.user.projects.push(req.body.id)
+                    }, function(err, numberAffected, rawResponse) {
+                    });
+                }
+
+                if (project) {
+                    res.json(project);
+                } else {
+                    var newProject = new Project();
+                    newProject.githubID = req.body.id;
+                    newProject.name = req.body.name;
+                    newProject.owner = req.body.owner.login;
+                    newProject.cloneUrl = req.body.clone_url;
+                    newProject.deployed = '0';
+                    newProject.save(function(err) {
+                        if (err)
+                            throw err;
+                        return done(null, newUser);
+                    });
+                    res.json(newProject);
+                }
+            });
+        } else {
+            res.redirect('/');
+        }
+    });
+
+    app.post('/api/projects/deployed/:id', function(req, res) {
+        if(req.user){
+            Project.findOne({githubID : req.params.id}, function(err, project) {
+                // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+                if (err)
+                    res.send(err);
+
+                Project.update({githubID : project.githubID}, {
+                    deployed : req.body.deploy
+                }, function(err, numberAffected, rawResponse) {
+                });
+
+                res.json(project); // return project in JSON format
+            });
+        } else {
+            res.redirect('/');
         }
     });
 
@@ -95,9 +183,9 @@ module.exports = function(app) {
 
     // mika api -----------------------------------------------------------------------
         
-    app.post('/api/project', function(req, res) {
+    /*app.post('/api/project/deployed', function(req, res) {
         if(req.user) {
-            // return user in JSON format
+            
             var options = {
                 host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
                 // (no http/https !)
@@ -131,7 +219,7 @@ module.exports = function(app) {
         }
     });
 
-
+*/
 
     /*app.get('/api/projects' function(req, res) {
         if(req.user) {

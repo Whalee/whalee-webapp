@@ -4,5 +4,9 @@
     var mongoose = require('mongoose');
 
     module.exports = mongoose.model('Project', {
-        id : String
+        githubID : String,
+        name 	  : String,
+        owner     : String,
+        cloneUrl : String,
+        deployed : String
     });
