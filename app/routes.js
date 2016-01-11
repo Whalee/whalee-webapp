@@ -27,7 +27,7 @@ module.exports = function(app) {
 
     // index
     app.get('/', function(req, res) {
-        res.sendfile('./views/index.html');
+        res.redirect('http://whalee.io');
     });
 
     app.get('/auth', passport.authenticate('github', {scope: ['user', 'repo', 'repo_deployment', 'public_repo', 'gist', 'admin:repo_hook']}));
@@ -35,6 +35,12 @@ module.exports = function(app) {
     app.get('/auth/callback', 
         passport.authenticate('github', {successRedirect: '/home',
                         failureRedirect:'/error'}));
+
+    app.get('/logout', function (req, res){
+        req.session.destroy(function (err) {
+            res.redirect('/'); //Inside a callback… bulletproof!
+        });
+    });
 
     // local api ----------------------------------------------------------------------
 
