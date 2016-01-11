@@ -398,8 +398,8 @@ module.exports = function(app) {
             };
 
             https.request(options, function(res2) {
-                console.log('STATUS: ' + res2.statusCode);
-                console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                //console.log('STATUS: ' + res2.statusCode);
+                //console.log('HEADERS: ' + JSON.stringify(res2.headers));
                 res2.setEncoding('utf8');
                 str = "";
                 res2.on('data', function (chunk) {
@@ -407,7 +407,7 @@ module.exports = function(app) {
                 });
 
                 res2.on('end', function () {
-                    console.log(str);
+                    //console.log(str);
                     res.json(JSON.parse(str));
                 });
 
