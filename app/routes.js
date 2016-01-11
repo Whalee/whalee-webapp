@@ -37,7 +37,7 @@ module.exports = function(app) {
         passport.authenticate('github', {successRedirect: '/home',
                         failureRedirect:'/error'}));
 
-    app.post('/logout', function(req, res) { 
+    app.get('/logout', function(req, res) { 
         req.logOut(); 
         console.log( "logout"); 
         res.send(401, "unauthorized"); 
