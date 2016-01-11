@@ -441,6 +441,7 @@ module.exports = function(app) {
                         method : 'POST'
                     };
 
+                    console.log("PATH : " + options.path);
                     https.request(options, function(res2) {
                         console.log('STATUS: ' + res2.statusCode);
                         console.log('HEADERS: ' + JSON.stringify(res2.headers));
@@ -486,7 +487,7 @@ module.exports = function(app) {
                         port : 443,
                         path : '/repos/' + project.owner + '/' + project.name + '/hooks/' + project.webhookID,
                         headers: {
-                            "authorization" : "Bearer " +req.user.githubToken, 
+                            "authorization" : "Bearer " + req.user.githubToken, 
                             "user-agent" : "Whalee-webapp" // GitHub is happy with a unique user agent 
                         },
                         method : 'DELETE'
