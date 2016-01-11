@@ -49,7 +49,14 @@ module.exports = function(app) {
             User.update({id : req.user.id}, {
                 sla : req.params.id
             });
-            res.json(req.user); // return user in JSON format
+
+            User.findOne({id : req.user.id}, function(err, user) {
+                // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+                if (err)
+                    res.send(err);
+
+                res.json(user); // return project in JSON format
+            });
         } else {
             res.redirect('/');     
         }
