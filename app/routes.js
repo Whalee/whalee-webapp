@@ -36,11 +36,45 @@ module.exports = function(app) {
         passport.authenticate('github', {successRedirect: '/home',
                         failureRedirect:'/error'}));
 
-    app.get('/logout', function (req, res){
-        req.session.destroy(function (err) {
-            req.logOut();
-            res.clearCookie('connect.sid');
-            res.redirect('/');
+    app.get( '/logout', function ( req, res, next ) {
+
+        if ( req.isUnauthenticated() ) {
+
+            // you are not even logged in, wtf
+            res.redirect( '/' );
+
+            return;
+
+        }
+
+        var sessionCookie = req.cookies['connect.sid'];
+
+        if ( ! sessionCookie ) {
+
+            // nothing to do here
+            res.redirect( '/' );
+
+            return;
+
+        }
+
+        var sessionId = sessionCookie.split( '.' )[0].replace( 's:', '' );
+
+        thinky.r.db( 'test' ).table( 'session' ).get( sessionId ).delete().run().then( function( result ) {
+
+            if ( ! result.deleted ) {
+
+                // we did not manage to find session for this user
+                res.redirect( '/' );
+
+                return;
+
+            }
+
+            req.logout();
+            res.redirect( '/' );
+
+            return;
         });
     });
 
