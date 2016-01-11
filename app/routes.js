@@ -80,6 +80,7 @@ module.exports = function(app) {
     app.get('/api/projects/deployed', function(req, res) {
         if(req.user){
             var result = [];
+            console.log("user : " + req.user);
             req.user.projects.forEach(function(element, index, array) {
                 Project.findOne({githubID : element}, function(err, project) {
                     if (err)
@@ -88,7 +89,7 @@ module.exports = function(app) {
                     result.push(project);                   
                 });
             });
-
+            console.log("return : " + result);
             res.json(result);
         } else {
             res.redirect('/');
@@ -119,7 +120,7 @@ module.exports = function(app) {
                         projects : req.user.projects.push(req.body.id)
                     }, function(err, numberAffected, rawResponse) {
                     });
-                    
+
                     res.json(newProject);
             }
         });
