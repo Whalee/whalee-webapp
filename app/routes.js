@@ -431,11 +431,12 @@ module.exports = function(app) {
                         // (no http/https !)
                         port : 443,
                         path : '/repos/' + project.owner + '/' + project.name + '/hooks',
+                        data : webhook,
                         headers: {
                             "authorization" : "Bearer " +req.user.githubToken, 
                             "user-agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
                             "Content-Type": "application/json",
-                            "Content-Length": Buffer.byteLength(req.body)
+                            "Content-Length": Buffer.byteLength(webhook)
                         },
                         method : 'POST'
                     };
@@ -460,7 +461,7 @@ module.exports = function(app) {
                             console.log(result);
                             res.json(result);
                         });
-                    }).on('error', function(e) {console.log("Got error: " + e.message);}).write(JSON.stringify(webhook)).end();      
+                    }).on('error', function(e) {console.log("Got error: " + e.message);}).end();      
                 } else {
                     res.status(404).send("project doesn't exist");
                 }
