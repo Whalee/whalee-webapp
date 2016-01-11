@@ -529,7 +529,7 @@ module.exports = function(app) {
                 res.send(err);
 
             if (project) { 
-                res.redirect('/api/projects/deployed/' + project.githubID + '/redeploy');
+                //res.redirect('/api/projects/deployed/' + project.githubID + '/redeploy');
                 project.deployed = '1';
                 project.save(function(err) {
                     if (err)
