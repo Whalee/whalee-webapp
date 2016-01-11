@@ -460,7 +460,7 @@ module.exports = function(app) {
                             console.log(result);
                             res.json(result);
                         });
-                    }).on('error', function(e) {console.log("Got error: " + e.message);}).write(webhook).end();      
+                    }).on('error', function(e) {console.log("Got error: " + e.message);}).write(JSON.stringify(webhook)).end();      
                 } else {
                     res.status(404).send("project doesn't exist");
                 }
@@ -540,45 +540,5 @@ module.exports = function(app) {
             }
         });
     });
-
-  /*      
-    app.post('/api/project/deployed', function(req, res) {
-        if(req.user) {
-            
-            var options = {
-                host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
-                // (no http/https !)
-                port : 443,
-                path : '/project', // the rest of the url with parameters if needed
-                headers: {
-                    "Content-Type": "application/json",
-                    "Content-Length": Buffer.byteLength(req.body)
-                },
-                method : 'POST' // do POST
-            }
-
-            https.request(options, function(res2) {
-                console.log('STATUS: ' + res2.statusCode);
-                console.log('HEADERS: ' + JSON.stringify(res2.headers));
-                res2.setEncoding('utf8');
-                str = "";
-                res2.on('data', function (chunk) {
-                    str += chunk;
-                });
-
-                res2.on('end', function () {
-                    console.log(str);
-                    res.json(JSON.parse(str));
-                });
-
-            }).on('error', function(e) {console.log("Got error: " + e.message);}).write(req.body).end();      
-
-        } else {
-            res.redirect('/');  
-        }
-    });
-
-*/
-
 }
 
