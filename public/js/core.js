@@ -292,8 +292,8 @@ function retrieveData(){
 }
 
     $scope.onContainerClick = function(containerId,index){
-        $( "table.mdl-data-table tr" ).css( "color", "black" );
-        $( "table.mdl-data-table tr:nth-child("+parseInt(index+1)+")" ).css( "color", "red" );
+        $( "table.mdl-data-table tbody>tr" ).css( "background-color", "white" );
+        $( "table.mdl-data-table tbody>tr:nth-child("+parseInt(index+1)+")" ).css( "background-color", "pink" );
         console.log("On click sur le container "+id);
         $scope.currentContainerId = containerId;
         retrieveData();
