@@ -1,5 +1,0 @@
-{
-  "callbackurl":"http://localhost:3000/auth/callback",
-  "github_id" : "7ab7630e3f756184e42c",
-  "github_secret" : "5419a81e96de98b899564d8ad7bcc29c7c609c31"
-}
