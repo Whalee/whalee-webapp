@@ -187,6 +187,18 @@ whalee.controller('projectsController', function($scope, $http, id) {
 
     $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
+    $scope.onRemoveClick = function () {
+      $http.delete('/api/projects/'+id)
+            .success(function(data){
+                //$scope.projects = data;
+                console.log(data);
+                $rootScope.$broadcast('updateProjectList');
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+    }
+
     $scope.containers = [{
     id: "Container 1",
     proc: {
@@ -265,9 +277,7 @@ function retrieveData(){
         console.log("On click sur le container "+id);
         $scope.currentContainerId = containerId;
         retrieveData();
-
     }
-
 
     $scope.deployButtonText = function(){
         return ($scope.isDeployed) ? "Undeploy" : "Deploy";
@@ -281,7 +291,6 @@ function retrieveData(){
                 console.log(data);
             })
             .error(function(data){
-                
                 console.log('Error: '+data);
             });
 });
@@ -310,13 +319,13 @@ whalee.controller('addController', function($scope, $http, $rootScope) {
             .success(function(data){
                 //$scope.projectListGitHub = data;
                 console.log(data);
+                $rootScope.$broadcast('updateProjectList');
             })
             .error(function(data){
                 console.log('Error: '+data);
             });
+    }
 
-        $rootScope.$broadcast('updateProjectList');
-    };
     $http.get('/api/projects/')
             .success(function(data){
                 $scope.projectListGitHub = data;
