@@ -292,6 +292,15 @@ whalee.controller('addController', function($scope, $http, $rootScope) {
 
     $scope.onAddClick = function(){
         console.log($scope.projectToAdd);
+        $http.post('/api/projects/fakedeploy', $scope.projectToAdd[0])
+            .success(function(data){
+                //$scope.projectListGitHub = data;
+                console.log(data);
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+
         $rootScope.$broadcast('updateProjectList');
     };
     $http.get('/api/projects/')
@@ -300,7 +309,6 @@ whalee.controller('addController', function($scope, $http, $rootScope) {
                 console.log(data);
             })
             .error(function(data){
-                
                 console.log('Error: '+data);
             });
 });
