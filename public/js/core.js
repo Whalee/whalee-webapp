@@ -44,11 +44,16 @@
             });
     });
 
-whalee.controller('mainController', function($scope,$http) {
+whalee.controller('mainController', function($scope,$http,$rootScope) {
     $scope.formData = {};
     $scope.showProjects = false;
     $scope.projectsIcon = "keyboard_arrow_right";
     $scope.projectList = [{name : "projet1", id : "id1"},{name : "projet2", id : "id2"}];
+
+    $rootScope.$on('updateProjectList', function () {
+      $scope.projectList[2]={name:"project3",id:"id3"};
+    });
+
     $scope.onProjectsClick = function(){
 
         $scope.showProjects = ! $scope.showProjects;
@@ -267,7 +272,7 @@ function retrieveData(){
             });
 });
 
-whalee.controller('addController', function($scope, $http) {
+whalee.controller('addController', function($scope, $http, $rootScope) {
     $scope.message = 'Please, select the projects to add.';
     $scope.projectToAdd = [];
 
@@ -287,6 +292,7 @@ whalee.controller('addController', function($scope, $http) {
 
     $scope.onAddClick = function(){
         console.log($scope.projectToAdd);
+        $rootScope.$broadcast('updateProjectList');
     };
     $http.get('/api/projects/')
             .success(function(data){
