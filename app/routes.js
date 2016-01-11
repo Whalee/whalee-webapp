@@ -103,6 +103,12 @@ module.exports = function(app) {
                 return done(err);
 
             if (project) { 
+                    req.user.projects.push(req.body.id);
+                    req.user.save(function(err) {
+                    if (err)
+                        throw err;
+                    });
+)
                     res.send("project already deployed");                
             } else {
                     var newProject = new Project();
@@ -116,9 +122,10 @@ module.exports = function(app) {
                         throw err;
                     });
 
-                    User.update({id : req.user.id}, {
-                        projects : req.user.projects.push(req.body.id)
-                    }, function(err, numberAffected, rawResponse) {
+                    req.user.projects.push(req.body.id);
+                    req.user.save(function(err) {
+                    if (err)
+                        throw err;
                     });
 
                     res.json(newProject);
