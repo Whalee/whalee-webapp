@@ -60,6 +60,7 @@ module.exports = function(app) {
         }
     });
 
+    // get a project added to whalee by ID
     app.get('/api/projects/added/:id', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
@@ -74,6 +75,7 @@ module.exports = function(app) {
         }
     });
 
+    // get all projects added to whalee
     app.get('/api/projects/added', function(req, res) {
         if(req.user){
             var result = [];
@@ -92,6 +94,7 @@ module.exports = function(app) {
         }
     });
 
+    // add a project to whalee
     app.post('/api/projects/added', function(req, res) {
         if(req.user){
             Project.findOne({ 'githubID' : req.body.id }, function (err, project) {
@@ -143,6 +146,49 @@ module.exports = function(app) {
 
                 res.json(project); // return project in JSON format
             });
+        } else {
+            res.redirect('/');
+        }
+    });
+
+    app.get('api/containers/:id', function(req, res) {
+        if(req.user){
+            var str = "[
+{
+  "proc": {
+    "max": 100.0,
+    "cur": 10.0,
+    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+  },
+  "disk": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+  },
+  "memory": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+  },
+},
+{
+  "proc": {
+    "max": 100.0,
+    "cur": 10.0,
+    "hist": [1, 7, 3, 4, 5, 6, 2, 8, 2, 8]
+  },
+  "disk": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 2, 8]
+  },
+  "memory": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 9, 8]
+  },
+}]"
+            res.json(str);
         } else {
             res.redirect('/');
         }
