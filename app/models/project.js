@@ -9,5 +9,7 @@
         owner     : String,
         cloneUrl : String,
         deployed : String,
+        hooked : String,
+        webhookID : String,
         coreID : String
     });

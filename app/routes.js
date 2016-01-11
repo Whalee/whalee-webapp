@@ -4,6 +4,7 @@ var User = require('./models/user');
 var Project = require('./models/project');
 var https = require('https');
 var http = require('http');
+var webhook = require("../config/webhook.json");
 
 
 // expose the routes to our app with module.exports
@@ -152,6 +153,8 @@ module.exports = function(app) {
                     newProject.owner = req.body.owner.login;
                     newProject.cloneUrl = req.body.clone_url;
                     newProject.deployed = '1';
+                    newProject.hooked = '0';
+                    newProject.webhookID = '0';
                     newProject.save(function(err) {
                     if (err)
                         throw err;
@@ -219,11 +222,12 @@ module.exports = function(app) {
                             newProject.owner = req.body.owner.login;
                             newProject.cloneUrl = req.body.clone_url;
                             newProject.deployed = '1';
+                            newProject.hooked = '0';
+                            newProject.webhookID = '0';
                             newProject.coreID = result.id;
                             newProject.save(function(err) {
                                 if (err)
                                     throw err;
-                                return done(null, newProject);
                             });
 
                             res.json(newProject);
@@ -377,6 +381,7 @@ module.exports = function(app) {
 */
     // github api ---------------------------------------------------------------------
 
+    // get all github projects
     app.get('/api/projects', function(req, res) {
         if(req.user) {
             // return user in JSON format
@@ -413,7 +418,129 @@ module.exports = function(app) {
         }
     });
 
-    // mika api -----------------------------------------------------------------------
+    // enable auto deploy
+    app.post('/api/projects/deployed/:id/enableautodeploy', function(req, res) {
+        if(req.user) {
+            Project.findOne({githubID : req.params.id}, function(err, project) {
+                if (err)
+                    res.send(err);
+
+                if (project) {            
+                    var options = {
+                        host : 'api.github.com', // here only the domain name
+                        // (no http/https !)
+                        port : 443,
+                        path : '/repos/' + project.owner + '/' + project.name + '/hooks',
+                        headers: {
+                            "authorization" : "Bearer " +req.user.githubToken, 
+                            "user-agent" : "Whalee-webapp", // GitHub is happy with a unique user agent 
+                            "Content-Type": "application/json",
+                            "Content-Length": Buffer.byteLength(req.body)
+                        },
+                        method : 'POST'
+                    };
+
+                    https.request(options, function(res2) {
+                        console.log('STATUS: ' + res2.statusCode);
+                        console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                        res2.setEncoding('utf8');
+                        str = "";
+                        res2.on('data', function (chunk) {
+                            str += chunk;
+                        });
+
+                        res2.on('end', function () {
+                            result = JSON.parse(str);
+                            project.hooked = '1';
+                            project.webhookID = result.id;
+                            project.save(function(err) {
+                                if (err)
+                                    throw err;
+                            });
+                            console.log(result);
+                            res.json(result);
+                        });
+                    }).on('error', function(e) {console.log("Got error: " + e.message);}).write(webhook).end();      
+                } else {
+                    res.status(404).send("project doesn't exist");
+                }
+            });
+
+        } else {
+            res.redirect('/');  
+        }
+    });
+      
+    // disable autodeploy
+    app.post('/api/projects/deployed/:id/disableautodeploy', function(req, res) {  
+        if(req.user) {
+            Project.findOne({githubID : req.params.id}, function(err, project) {
+                if (err)
+                    res.send(err);
+
+                if (project) { 
+                    var options = {
+                        host : 'api.github.com', // here only the domain name
+                        // (no http/https !)
+                        port : 443,
+                        path : '/repos/' + project.owner + '/' + project.name + '/hooks/' + project.webhookID,
+                        headers: {
+                            "authorization" : "Bearer " +req.user.githubToken, 
+                            "user-agent" : "Whalee-webapp" // GitHub is happy with a unique user agent 
+                        },
+                        method : 'DELETE'
+                    };  
+
+                    https.request(options, function(res2) {
+                        console.log('STATUS: ' + res2.statusCode);
+                        console.log('HEADERS: ' + JSON.stringify(res2.headers));
+                        res2.setEncoding('utf8');
+                        str = "";
+                        res2.on('data', function (chunk) {
+                            str += chunk;
+                        });
+
+                        res2.on('end', function () {
+                            result = JSON.parse(str);
+                            project.hooked = '0';
+                            project.webhookID = '0';
+                            project.save(function(err) {
+                                if (err)
+                                    throw err;
+                            });
+                            console.log(result);
+                            res.json(result);
+                        });
+                    }).on('error', function(e) {console.log("Got error: " + e.message);}).end();      
+                } else {
+                    res.status(404);send("project doesn't exist");
+                }
+            });
+        } else {
+            res.redirect('/');  
+        }
+    });
+
+    // push detected (webhooks)
+    app.get('/push', function(req, res) {
+        console.log("PUSH DETECTED");
+        Project.findOne({githubID : req.body.repository.id}, function(err, project) {
+            if (err)
+                res.send(err);
+
+            if (project) { 
+                res.redirect('/api/projects/deployed/' + project.githubID + '/redeploy');
+                project.deployed = '1';
+                project.save(function(err) {
+                    if (err)
+                        throw err;
+                });
+            } else {
+                res.status(404).send("project doesn't exist");
+            }
+        });
+    });
+
   /*      
     app.post('/api/project/deployed', function(req, res) {
         if(req.user) {
@@ -453,152 +580,5 @@ module.exports = function(app) {
 
 */
 
-    /*app.get('/api/projects' function(req, res) {
-        if(req.user) {
-
-        } else {
-            res.redirect('/');
-        }
-    }); */
-
-    // get all users
-    /*app.get('/api/users', function(req, res) {
-
-        // use mongoose to get all users in the database
-        User.find(function(err, users) {
-
-            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-            if (err)
-                res.send(err);
-
-            res.json(users); // return all users in JSON format
-        });
-    });
-
-    app.get('/api/lolcat', function(req, res) {
-        console.log("REQ.USER : \n" + req.user);
-        res.json(req.user); // return user in JSON format     
-    });
-
-    // get an user
-    app.get('/api/users/:user_id', function(req, res) {
-        User.find({
-            githubID : req.params.user_id
-        }, function(err, user) {
-            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-            if (err) {
-                res.send(err);
-                console.log(err);
-            }
-
-
-            res.json(user); // return user in JSON format
-        });
-    });
-
-    // create user and send back all users after creation
-    app.post('/api/users', function(req, res) {
-
-        // create a user, information comes from AJAX request from Angular
-        User.create({
-            id : req.body.text,
-            token : 'token',
-            sla: '1',
-            projects : [] 
-        }, function(err, user) {
-            if (err) {
-                res.send(err);
-                console.log(err);
-            }
-
-            // get and return all the users after you create another
-            User.find(function(err, users) {
-                if (err)
-                    res.send(err)
-                res.json(users);
-            });
-        });
-
-    });
-
-    // delete a user
-    app.delete('/api/users/:user_id', function(req, res) {
-        User.remove({
-            id : req.params.user_id
-        }, function(err, user) {
-            if (err)
-                res.send(err);
-
-            User.find(function(err, users) {
-                if (err)
-                    res.send(err)
-                res.json(users);
-            });
-        });
-    });
-
-    // get all projects
-    app.get('/api/projects', function(req, res) {
-
-        // use mongoose to get all projects in the database
-        Project.find(function(err, projects) {
-
-            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-            if (err)
-                res.send(err);
-
-            res.json(projects); // return all projects in JSON format
-        });
-    });
-
-    // get a project
-    app.get('/api/projects/:project_id', function(req, res) {
-        Project.find({
-            id : req.params.project
-        }, function(err, project) {
-            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-            if (err)
-                res.send(err);
-
-            res.json(project); // return project in JSON format
-        });
-    });
-
-    // create project and send back all projects after creation
-    app.post('/api/projects', function(req, projects) {
-
-        // create a project, information comes from AJAX request from Angular
-        Project.create({
-            id : req.body.text,
-        }, function(err, todo) {
-            if (err)
-                res.send(err);
-
-            // get and return all the projects after you create another
-            Project.find(function(err, projects) {
-                if (err)
-                    res.send(err)
-                res.json(projects);
-            });
-        });
-
-    });
-
-    // delete a project
-    app.delete('/api/projects/:project_id', function(req, res) {
-        Project.remove({
-            id : req.params.project_id
-        }, function(err, project) {
-            if (err)
-                res.send(err);
-
-            Project.find(function(err, projects) {
-                if (err)
-                    res.send(err)
-                res.json(projects);
-            });
-        });
-    });*/
-
-};
+}
 
