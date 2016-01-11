@@ -39,7 +39,10 @@
     },
     function (accessToken, refreshToken, profile, done) {
         process.nextTick(function () {
-            console.log(profile);
+            console.log(profile.username);
+            if ((profile.username!='julienbiau')&&(profile.username!='s4db0y')&&(profile.username!='MagicMicky')) {
+              return done("error");
+            }
             User.findOne({ 'githubID' : profile.id }, function (err, user) {
                  // if there is an error, stop everything and return that
                 // ie an error connecting to the database
