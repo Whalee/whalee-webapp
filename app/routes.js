@@ -69,6 +69,24 @@ module.exports = function(app) {
         }
     });
 
+    app.get('/api/projects/added', function(req, res) {
+        if(req.user){
+            var result = [];
+            req.user.projects.forEach(function(element, index, array) {
+                Project.findOne({githubID : element}, function(err, project) {
+                    if (err)
+                        res.send(err);
+
+                    result.push(project);                   
+                });
+            });
+
+            res.json(result);
+        } else {
+            res.redirect('/');
+        }
+    });
+
     app.post('/api/projects/added', function(req, res) {
         if(req.user){
             Project.findOne({ 'githubID' : req.body.id }, function (err, project) {
@@ -165,7 +183,7 @@ module.exports = function(app) {
 
     // mika api -----------------------------------------------------------------------
         
-    app.post('/api/project', function(req, res) {
+    /*app.post('/api/project/deployed', function(req, res) {
         if(req.user) {
             
             var options = {
@@ -201,7 +219,7 @@ module.exports = function(app) {
         }
     });
 
-
+*/
 
     /*app.get('/api/projects' function(req, res) {
         if(req.user) {
