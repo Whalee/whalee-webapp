@@ -156,7 +156,6 @@ whalee.controller('slaController', function($scope,$http) {
                 console.log(data);
             })
             .error(function(data){
-                
                 console.log('Error: '+data);
             });
     };
@@ -235,7 +234,7 @@ whalee.controller('projectsController', function($scope, $http, id, $rootScope, 
  
     }
 }, {
-    id: "Contaiener 2",
+    id: "Container 2",
     proc: {
         max: 100,
         cur:10,
@@ -292,7 +291,9 @@ function retrieveData(){
     }
 }
 
-    $scope.onContainerClick = function(containerId){
+    $scope.onContainerClick = function(containerId,index){
+        $( "table.mdl-data-table tr" ).css( "color", "black" );
+        $( "table.mdl-data-table tr:nth-child("+parseInt(index+1)+")" ).css( "color", "red" );
         console.log("On click sur le container "+id);
         $scope.currentContainerId = containerId;
         retrieveData();
