@@ -202,7 +202,7 @@ module.exports = function(app) {
                         port : 80,
                         data : { "user" : req.body.owner.login,
                                  "project" : req.body.name
-                               }
+                               },
                         path : '/project', // the rest of the url with parameters if needed
                         headers: {
                             "Content-Type": "application/json",
