@@ -40,7 +40,6 @@ whalee.controller('mainController', function($scope,$http,$rootScope) {
     });
 
     $scope.onProjectsClick = function(){
-
         $scope.showProjects = ! $scope.showProjects;
         if($scope.showProjects){
             $scope.projectsIcon = "keyboard_arrow_down";
@@ -160,13 +159,16 @@ whalee.controller('slaController', function($scope,$http) {
     };
 });
 
-whalee.controller('projectsController', function($scope, $http, id, $rootScope, $location) {
+whalee.controller('projectsController', function($scope, $http, id, $rootScope, $location,$interval,$timeout) {
     $scope.project = null;
     for (i in $rootScope.projectList) {
       if ($rootScope.projectList[i].githubID==id) {
         $scope.project = $rootScope.projectList[i];
       }
     }
+
+    $scope.first = true;
+    $scope.index = null;
 
     $scope.userInfo = $rootScope.userInfo;
     $scope.message = 'This is the project : '+$scope.project.name;
@@ -219,7 +221,7 @@ whalee.controller('projectsController', function($scope, $http, id, $rootScope, 
 
     $scope.containers = [{
     id: "Container 1",
-    proc: {
+    data: { proc: {
         max: 100,
         cur:10,
         hist: [1,12,15,14,12,13,4,3,3,3,3],
@@ -231,11 +233,10 @@ whalee.controller('projectsController', function($scope, $http, id, $rootScope, 
         max: 100,
         cur:10,
         hist: [1,12,15],
- 
-    }
+    }}
 }, {
     id: "Container 2",
-    proc: {
+    data: { proc: {
         max: 100,
         cur:10,
         hist: [1,12,15],
@@ -247,13 +248,11 @@ whalee.controller('projectsController', function($scope, $http, id, $rootScope, 
         max: 100,
         cur:10,
         hist: [1,12,15],
-    }
+    }}
 }];
 
 
 function getTimeScale(size){
-        console.log("On rentre dans le getTimeScale.");
-
     var list = [];
 
     for(var i = (size-1); i>=0; i--){
@@ -261,37 +260,57 @@ function getTimeScale(size){
     }
 
     return list;
+}
 
-};
+  
+    function getData() {
+      $http.get('/api/projects/deployed/'+$scope.project.githubID+'/data')
+            .success(function(data){
+                $scope.containers = data;
+                console.log(data);
+                if ($scope.index!=null) {
+                  $timeout(function () { $( "table.mdl-data-table tbody>tr:nth-child("+parseInt($scope.index)+")" ).css( "background-color", "pink" ); }, 100);
+                }
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+      }
+
+    getData();
+
+    $interval(getData, 5000);
 
 function retrieveData(){
-    console.log("On rentre dans le retrieveData.");
-    console.log("current ID : "+ $scope.currentContainerId);
+    //console.log("On rentre dans le retrieveData.");
+    //console.log("current ID : "+ $scope.currentContainerId);
 
     for(var i = 0; i<$scope.containers.length; i++){
-            console.log("ID visité: "+ $scope.containers[i].id);
+        //console.log("ID visité: "+ $scope.containers[i].id);
 
         if($scope.containers[i].id == $scope.currentContainerId){
-            console.log("On a trouver un id qui est "+ $scope.containers[i].id);
+            //console.log("On a trouver un id qui est "+ $scope.containers[i].id);
+            var data  = $scope.containers[i].data;
 
-            $scope.timeScaleCPU = getTimeScale($scope.containers[i].proc.hist.length);
-            console.log($scope.containers[i] +" "+ i);
+            $scope.timeScaleCPU = getTimeScale(data.proc.hist.length);
+            //console.log($scope.containers[i] +" "+ i);
             $scope.dataCPU = [];
-            var temp = $scope.containers[i].proc.hist;
+            var temp = data.proc.hist;
             $scope.dataCPU.push(temp);
 
-            $scope.timeScaleMem = getTimeScale($scope.containers[i].memory.hist.length);
+            $scope.timeScaleMem = getTimeScale(data.memory.hist.length);
             $scope.dataMem = [];
-            $scope.dataMem.push($scope.containers[i].memory.hist);
+            $scope.dataMem.push(data.memory.hist);
 
-            $scope.timeScaleDisk = getTimeScale($scope.containers[i].disk.hist.length);
+            $scope.timeScaleDisk = getTimeScale(data.disk.hist.length);
             $scope.dataDisk = [];
-            $scope.dataDisk.push($scope.containers[i].disk.hist);
+            $scope.dataDisk.push(data.disk.hist);
         }
     }
 }
 
     $scope.onContainerClick = function(containerId,index){
+        $scope.index = parseInt(index+1);
         $( "table.mdl-data-table tbody>tr" ).css( "background-color", "white" );
         $( "table.mdl-data-table tbody>tr:nth-child("+parseInt(index+1)+")" ).css( "background-color", "pink" );
         console.log("On click sur le container "+id);
@@ -305,14 +324,15 @@ function retrieveData(){
     $scope.onDeployClick = function(){
         $scope.isDeployed = !($scope.isDeployed);
     }
-    $http.get('/api/projects/')
+
+    /*$http.get('/api/projects/')
             .success(function(data){
                 $scope.projects = data;
                 console.log(data);
             })
             .error(function(data){
                 console.log('Error: '+data);
-            });
+            });*/
 });
 
 whalee.controller('addController', function($scope, $http, $rootScope) {
@@ -321,7 +341,7 @@ whalee.controller('addController', function($scope, $http, $rootScope) {
 
     $scope.onAddClick = function(index){
         console.log($scope.projectListGitHub);
-        $http.post('/api/projects/deployed', $scope.projectListGitHub[index])
+        $http.post('/api/projects/fakedeploy', $scope.projectListGitHub[index])
             .success(function(data){
                 console.log(data);
                 $rootScope.$broadcast('updateProjectList');
@@ -352,13 +372,13 @@ whalee.controller('addController', function($scope, $http, $rootScope) {
                 var tab = $rootScope.projectList;
                 for (i in $scope.projectListGitHub) {
                   $scope.projectListGitHub[i].added=false;
-
                   for (j in tab) {
                     if (tab[j].githubID==$scope.projectListGitHub[i].id) {
                       $scope.projectListGitHub[i].added=true;
                     }
                   }
                 }
+console.log(data);
             })
             .error(function(data){
                 console.log('Error: '+data);
