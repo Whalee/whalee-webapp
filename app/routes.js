@@ -373,7 +373,7 @@ module.exports = function(app) {
     });
     
 
-    /*app.get('/api/projects/deployed/:id/data', function(req, res) {
+    app.get('/api/projects/deployed/:id/data/:date/fake', function(req, res) {
         if(req.user){
             console.log("ALT = " + alt);
             var str = 
@@ -478,7 +478,7 @@ module.exports = function(app) {
         } else {
             res.redirect('/');
         }
-    }); */
+    });
 
     // github api ---------------------------------------------------------------------
 
