@@ -348,7 +348,7 @@ module.exports = function(app) {
                                     });
 
                                     res3.on('end', function () {
-                                        data.push({ct.containers[i], JSON.parse(str)});
+                                        data.push({"id" : ct.containers[i], "data" : JSON.parse(str)});
                                         if(i == ct.containers.length-1)
                                             res.json(data);
                                     });
