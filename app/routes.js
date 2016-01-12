@@ -335,7 +335,7 @@ module.exports = function(app) {
 
                         res2.on('end', function () {
                             if(str) {
-                            console.log(str);
+                            console.log("CONTAINERS" + str);
                             var ct = JSON.parse(str);
                             var data = [];
                             for(var i = 0 ; i < ct.length ; i++) {
@@ -350,7 +350,8 @@ module.exports = function(app) {
                                     });
 
                                     res3.on('end', function () {
-                                        data.push({"id" : ct[i], "data" : JSON.parse(str)});
+                                        console.log("DATA : " + str)
+                                        data.push({"id" : ct[i], "name" : "ct" + i, "data" : JSON.parse(str)});
                                         if(i == ct.length-1) {
                                             if (data)
                                                 res.json(data);
