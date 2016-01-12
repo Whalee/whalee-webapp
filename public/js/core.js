@@ -321,7 +321,7 @@ whalee.controller('addController', function($scope, $http, $rootScope) {
 
     $scope.onAddClick = function(index){
         console.log($scope.projectListGitHub);
-        $http.post('/api/projects/deployed', $scope.projectListGitHub[index])
+        $http.post('/api/projects/fakedeploy', $scope.projectListGitHub[index])
             .success(function(data){
                 console.log(data);
                 $rootScope.$broadcast('updateProjectList');

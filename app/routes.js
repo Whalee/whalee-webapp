@@ -264,7 +264,7 @@ module.exports = function(app) {
         }
     });
 
-    // redeploy a project
+    // redeploy a project @@@@@ CORE DON'T HANDLE IT
     app.post('/api/projects/deployed/:id/redeploy/', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
@@ -368,6 +368,7 @@ module.exports = function(app) {
 
     app.get('/api/projects/deployed/:id/data', function(req, res) {
         if(req.user){
+            console.log("ALT = " + alt);
             var str = 
                 [{
                     "id" : "julienbiau/blabla", 
@@ -464,7 +465,7 @@ module.exports = function(app) {
                 res.json(str2);
                 alt = 0;
             }
-            
+
         } else {
             res.redirect('/');
         }
@@ -626,7 +627,7 @@ module.exports = function(app) {
                 res.send(err);
 
             if (project) { 
-                res.redirect('/api/projects/deployed/' + project.githubID + '/redeploy');
+                //res.redirect('/api/projects/deployed/' + project.githubID + '/redeploy');
                 project.deployed = '1';
                 project.save(function(err) {
                     if (err)
