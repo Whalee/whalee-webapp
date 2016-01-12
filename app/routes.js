@@ -360,7 +360,7 @@ module.exports = function(app) {
                                         }
 
                                     });
-                                });               
+                                }).on('error', function(e) {console.log("Got error: " + e.message);}).end();               
                             }
                         }});
                     }).on('error', function(e) {console.log("Got error: " + e.message);}).end();
