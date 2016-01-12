@@ -264,7 +264,8 @@ function getTimeScale(size){
 
   
     function getData() {
-      $http.get('/api/projects/deployed/'+$scope.project.githubID+'/data')
+      var d = new Date();
+      $http.get('/api/projects/deployed/'+$scope.project.githubID+'/data/'+d.getTime())
             .success(function(data){
                 $scope.containers = data;
                 console.log(data);
