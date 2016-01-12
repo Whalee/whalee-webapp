@@ -368,7 +368,7 @@ module.exports = function(app) {
 
     app.get('/api/projects/deployed/:id/data', function(req, res) {
         if(req.user){
-        var str = [{{ julienbiau/blabla},
+        var str = [{{"julienbiau/blabla"},
 {
   "proc": {
     "max": 100.0,
@@ -386,7 +386,7 @@ module.exports = function(app) {
     "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
   }
 }},
-{{julienbiau/blabla2},
+{{"julienbiau/blabla2"},
 {
   "proc": {
     "max": 100.0,
@@ -405,7 +405,7 @@ module.exports = function(app) {
   }
 }}];
 
-var str2 = [{{ julienbiau/blabla},
+var str2 = [{{"julienbiau/blabla"},
 {
   "proc": {
     "max": 100.0,
@@ -423,7 +423,7 @@ var str2 = [{{ julienbiau/blabla},
     "hist": [1, 2, 3, 2, 5, 6, 2, 8, 9, 8]
   }
 }},
-{{julienbiau/blabla2},
+{{"julienbiau/blabla2"},
 {
   "proc": {
     "max": 100.0,
