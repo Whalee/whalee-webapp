@@ -338,6 +338,7 @@ module.exports = function(app) {
                             console.log("CONTAINERS: " + str);
                             var ct = JSON.parse(str);
                             var data = [];
+                            var retour = 0;
                             for(var i = 0 ; i < ct.length ; i++) {
                                 options.path = '/container/' + ct[i];
                                 http.request(options, function(res3) {
@@ -350,9 +351,11 @@ module.exports = function(app) {
                                     });
 
                                     res3.on('end', function () {
+                                        retour++;
                                         console.log("DATA: " + str)
                                         data.push({"id" : ct[i], "name" : "ct" + i, "data" : JSON.parse(str)});
-                                        if(i == ct.length-1) {
+                                        if(retour == ct.length) {
+                                            console.log("ICI");
                                             if (data)
                                                 res.json(data);
                                             else
