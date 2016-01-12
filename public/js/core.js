@@ -265,13 +265,15 @@ function getTimeScale(size){
   
     function getData() {
       var d = new Date();
-      $http.get('/api/projects/deployed/'+$scope.project.githubID+'/data/'+d.getTime())
+      $http.get('/api/projects/deployed/'+$scope.project.githubID+'/data/'+d.getTime()+'/fake')
             .success(function(data){
-                $scope.containers = data;
+                $scope.containersData = data;
                 console.log(data);
-                if ($scope.index!=null) {
-                  $timeout(function () { $( "table.mdl-data-table tbody>tr:nth-child("+parseInt($scope.index)+")" ).css( "background-color", "pink" ); }, 100);
+                if ($scope.first) {
+                  $scope.containers = data;
+                  $scope.first = false;
                 }
+                retrieveData();
             })
             .error(function(data){
                 console.log('Error: '+data);
@@ -280,7 +282,7 @@ function getTimeScale(size){
 
     getData();
 
-    $interval(getData, 2000);
+    $interval(getData, 1000);
 
 function retrieveData(){
     //console.log("On rentre dans le retrieveData.");
@@ -291,7 +293,7 @@ function retrieveData(){
 
         if($scope.containers[i].id == $scope.currentContainerId){
             //console.log("On a trouver un id qui est "+ $scope.containers[i].id);
-            var data  = $scope.containers[i].data;
+            var data  = $scope.containersData[i].data;
 
             $scope.timeScaleCPU = getTimeScale(data.proc.hist.length);
             //console.log($scope.containers[i] +" "+ i);
