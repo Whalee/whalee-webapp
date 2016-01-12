@@ -39,6 +39,7 @@ module.exports = function(app) {
 
     app.get('/logout', function (req, res){
         req.session.destroy(function (err) {
+            res.clearCookie('connect.sid');
             res.redirect('/'); //Inside a callback… bulletproof!
         });
     });
@@ -185,34 +186,36 @@ module.exports = function(app) {
                 if (err)
                     return done(err);
 
-                var filtered = req.user.projects.filter(function (id) {return id == project.githubID;});
+                /*var filtered = req.user.projects.filter(function (id) {return id == project.githubID;});
 
                 if (filtered.length == 0) {
                     User.update({id : req.user.id}, {
                         projects : req.user.projects.push(req.body.id)
                     }, function(err, numberAffected, rawResponse) {
                     });
-                }
+                }*/
 
                 if (project) { 
                     res.send("project already deployed");
                 } else {
-                    var options = {
-                        host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
-                        // (no http/https !)
-                        port : 80,
-                        data : { "user" : req.body.owner.login,
+                    var data = { "user" : req.body.owner.login,
                                  "project" : req.body.name
-                               },
+                               };
+                    var dataStr = JSON.stringify(data);
+
+                    var options = {
+                        host : 'localhost', // here only the domain name  @@@@@ TO DO @@@@@
+                        // (no http/https !)
+                        port : 4200,
                         path : '/project', // the rest of the url with parameters if needed
                         headers: {
                             "Content-Type": "application/json",
-                            "Content-Length": Buffer.byteLength(req.body)
+                            "Content-Length": Buffer.byteLength(dataStr)
                         },
                         method : 'POST' // do POST
                     }
 
-                    http.request(options, function(res2) {
+                    var post_req = http.request(options, function(res2) {
                         console.log('STATUS: ' + res2.statusCode);
                         console.log('HEADERS: ' + JSON.stringify(res2.headers));
                         res2.setEncoding('utf8');
@@ -238,9 +241,18 @@ module.exports = function(app) {
                                     throw err;
                             });
 
+                            req.user.projects.push(req.body.id);
+                            req.user.save(function(err) {
+                            if (err)
+                                throw err;
+                            });
+
                             res.json(newProject);
                         });
-                    }).on('error', function(e) {console.log("Got error: " + e.message);}).end(); 
+                    }).on('error', function(e) {console.log("Got error: " + e.message);});
+                    
+                    post_req.write(dataStr);
+                    post_req.end(); 
                 }
             });
         } else {
@@ -260,9 +272,9 @@ module.exports = function(app) {
                     res.send("project doesn't exist");
 
                 var options = {
-                    host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
+                    host : 'localhost', // here only the domain name  @@@@@ TO DO @@@@@
                     // (no http/https !)
-                    port : 80,
+                    port : 4200,
                     path : '/project/' + project.coreID, // the rest of the url with parameters if needed
                     headers: {
                     },
@@ -289,7 +301,9 @@ module.exports = function(app) {
             res.redirect('/');
         }
     });
-/*    app.get('/api/projects/deployed/:id/data', function(req, res) {
+    
+   // get data from project 
+    app.get('/api/projects/deployed/:id/data', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -298,9 +312,9 @@ module.exports = function(app) {
 
                 if (project) { 
                     var options = {
-                        host : 'api.mika', // here only the domain name  @@@@@ TO DO @@@@@
+                        host : 'localhost', // here only the domain name  @@@@@ TO DO @@@@@
                         // (no http/https !)
-                        port : 80,
+                        port : 4200,
                         path : '/project/' + project.coreID, // the rest of the url with parameters if needed
                         method : 'GET' // do POST
                     }
@@ -319,7 +333,7 @@ module.exports = function(app) {
                             var ct = JSON.parse(str);
                             var data = [];
                             for(var i = 0 ; i < ct.containers.length ; i++) {
-                                options.path = '/container' + ct.containers[i];
+                                options.path = '/container/' + ct.containers[i];
                                 http.request(options, function(res3) {
                                     console.log('STATUS: ' + res3.statusCode);
                                     console.log('HEADERS: ' + JSON.stringify(res3.headers));
@@ -329,6 +343,12 @@ module.exports = function(app) {
                                         str += chunk;
                                     });
 
+                                    res3.on('end', funtion () {
+                                        data.push({ct.containers[i], JSON.parse(str)});
+                                        if(i == ct.containers.length-1)
+                                            res.json(data);
+                                    });
+                                });               
                             }
                         });
                     }).on('error', function(e) {console.log("Got error: " + e.message);}).end();
@@ -339,7 +359,7 @@ module.exports = function(app) {
         } else {
             res.redirect('/');
         }
-    }); */
+    }); 
     
 /*
     app.get('api/containers/:id', function(req, res) {
