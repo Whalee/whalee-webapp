@@ -307,7 +307,7 @@ module.exports = function(app) {
     });
     
    // get data from project 
-    app.get('/api/projects/deployed/:id/data', function(req, res) {
+    app.get('/api/projects/deployed/:id/data/:date', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -338,8 +338,8 @@ module.exports = function(app) {
                             console.log(str);
                             var ct = JSON.parse(str);
                             var data = [];
-                            for(var i = 0 ; i < ct.containers.length ; i++) {
-                                options.path = '/container/' + ct.containers[i];
+                            for(var i = 0 ; i < ct.length ; i++) {
+                                options.path = '/container/' + ct[i];
                                 http.request(options, function(res3) {
                                     console.log('STATUS: ' + res3.statusCode);
                                     console.log('HEADERS: ' + JSON.stringify(res3.headers));
@@ -350,8 +350,8 @@ module.exports = function(app) {
                                     });
 
                                     res3.on('end', function () {
-                                        data.push({"id" : ct.containers[i], "data" : JSON.parse(str)});
-                                        if(i == ct.containers.length-1) {
+                                        data.push({"id" : ct[i], "data" : JSON.parse(str)});
+                                        if(i == ct.length-1) {
                                             if (data)
                                                 res.json(data);
                                             else
