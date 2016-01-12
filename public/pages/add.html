@@ -20,10 +20,10 @@
         		<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-2">
   					<!--<input type="checkbox" name="selectedProject[]" value="{{ project }}" ng-checked="selection.indexOf(project) > -1" ng-click="toggleSelection(project)" class="mdl-checkbox__input" >-->
 			<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"  ng-click="onAddClick($index)" style="margin-top:-7px;" ng-hide="{{project.added}}">
-			Add
+			Deploy
 			</button>
 			<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"  ng-click="onDeleteClick($index)" style="margin-top:-7px;background-color : #FF4081;" ng-show="{{project.added}}">
-			Remove
+			Undeploy
 			</button>
 				</label>
         		</td>
