@@ -307,7 +307,7 @@ module.exports = function(app) {
     });
     
    // get data from project 
-    /*app.get('/api/projects/deployed/:id/data', function(req, res) {
+    app.get('/api/projects/deployed/:id/data', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -363,7 +363,7 @@ module.exports = function(app) {
         } else {
             res.redirect('/');
         }
-    }); */
+    });
     
 
     /*app.get('/api/projects/deployed/:id/data', function(req, res) {
