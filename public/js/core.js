@@ -51,12 +51,10 @@ whalee.controller('mainController', function($scope,$http,$rootScope) {
     }
 
     function getProjectsDeployed() {
-      console.log('getProjectsDeployed');
       $http.get('/api/projects/deployed')
             .success(function(data){
                 $scope.projectList = data;
                 $rootScope.projectList = data;
-                console.log(data);
                 if (data.length==0) {
                   if ($scope.showProjects) {
                     $scope.onProjectsClick();
@@ -77,6 +75,7 @@ whalee.controller('mainController', function($scope,$http,$rootScope) {
     $http.get('/api/user/')
             .success(function(data){
                 $scope.userInfo = data;
+                $rootScope.userInfo = data;
                 console.log(data);
             })
             .error(function(data){
@@ -169,7 +168,8 @@ whalee.controller('projectsController', function($scope, $http, id, $rootScope, 
       }
     }
 
-    $scope.message = 'This is the project: '+$scope.project.name;
+    $scope.userInfo = $rootScope.userInfo;
+    $scope.message = 'This is the project : '+$scope.project.name;
     $scope.isDeployed = false;
     $scope.hooked = ($scope.project.hooked=="0")?false:true;
 
