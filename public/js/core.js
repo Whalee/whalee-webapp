@@ -265,13 +265,17 @@ function getTimeScale(size){
   
     function getData() {
       var d = new Date();
-      $http.get('/api/projects/deployed/'+$scope.project.githubID+'/data/'+d.getTime()+'/fake')
+      $http.get('/api/projects/deployed/'+$scope.project.githubID+'/data/'+d.getTime())
             .success(function(data){
                 $scope.containersData = data;
                 console.log(data);
-                if ($scope.first) {
+                if (($scope.first)||($scope.containers.length!=$scope.containersData.length)) {
                   $scope.containers = data;
-                  $scope.first = false;
+                  if ($scope.first) {
+                    $scope.first = false;
+                  } else {
+                    $( "table.mdl-data-table tbody>tr:nth-child("+$scope.index+")" ).css( "background-color", "pink" );
+                  }
                 }
                 retrieveData();
             })
