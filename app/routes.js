@@ -211,7 +211,7 @@ module.exports = function(app) {
                         host : 'localhost', // here only the domain name  @@@@@ TO DO @@@@@
                         // (no http/https !)
                         port : 4200,
-                        path : '/project', // the rest of the url with parameters if needed
+                        path : '/project/', // the rest of the url with parameters if needed
                         headers: {
                             "Content-Type": "application/json",
                             "Content-Length": Buffer.byteLength(dataStr)
