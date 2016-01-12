@@ -332,7 +332,9 @@ module.exports = function(app) {
                             str += chunk;
                         });
 
+
                         res2.on('end', function () {
+                            if(str) {
                             console.log(str);
                             var ct = JSON.parse(str);
                             var data = [];
@@ -349,12 +351,17 @@ module.exports = function(app) {
 
                                     res3.on('end', function () {
                                         data.push({"id" : ct.containers[i], "data" : JSON.parse(str)});
-                                        if(i == ct.containers.length-1)
-                                            res.json(data);
+                                        if(i == ct.containers.length-1) {
+                                            if (data)
+                                                res.json(data);
+                                            else
+                                                res.status(404).send();
+                                        }
+
                                     });
                                 });               
                             }
-                        });
+                        }});
                     }).on('error', function(e) {console.log("Got error: " + e.message);}).end();
                 } else {
                     res.send("project doesn't exist")
