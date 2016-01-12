@@ -334,7 +334,7 @@ module.exports = function(app) {
 
 
                         res2.on('end', function () {
-                            if(str) {
+                            if(str != null) {
                             console.log("CONTAINERS: " + str);
                             var ct = JSON.parse(str);
                             var data = [];
