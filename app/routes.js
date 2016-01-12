@@ -303,7 +303,7 @@ module.exports = function(app) {
     });
     
    // get data from project 
-    app.get('/api/projects/deployed/:id/data', function(req, res) {
+    /*app.get('/api/projects/deployed/:id/data', function(req, res) {
         if(req.user){
             Project.findOne({githubID : req.params.id}, function(err, project) {
                 // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -343,7 +343,7 @@ module.exports = function(app) {
                                         str += chunk;
                                     });
 
-                                    res3.on('end', funtion () {
+                                    res3.on('end', function () {
                                         data.push({ct.containers[i], JSON.parse(str)});
                                         if(i == ct.containers.length-1)
                                             res.json(data);
@@ -359,7 +359,7 @@ module.exports = function(app) {
         } else {
             res.redirect('/');
         }
-    }); 
+    }); */
     
 /*
     app.get('api/containers/:id', function(req, res) {
