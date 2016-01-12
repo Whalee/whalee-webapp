@@ -353,7 +353,7 @@ module.exports = function(app) {
                                     res3.on('end', function () {
                                         retour++;
                                         console.log("DATA: " + str)
-                                        data.push({"id" : ct[i], "name" : "ct" + i, "data" : JSON.parse(str)});
+                                        data.push({"id" : ct[i], "name" : "ct" + retour, "data" : JSON.parse(str)});
                                         if(retour == ct.length) {
                                             console.log("ICI");
                                             if (data)
