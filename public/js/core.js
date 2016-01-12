@@ -1,22 +1,7 @@
 // public/core.js
 
-
-
-        // include ngRoute for all our routing needs
+    // include ngRoute for all our routing needs
     var whalee = angular.module('whalee', ['chart.js','ngRoute']);
-
-
-//    whalee.config(['ChartJsProvider', function (ChartJsProvider) {
-        // Configure all charts
-//        ChartJsProvider.setOptions({
-//          colours: ['#FF5252', '#FF8A80'],
-//          responsive: false
-//        });
-        // Configure all line charts
-//        ChartJsProvider.setOptions('Line', {
-//          datasetFill: false
-//        });
-//    }])
 
     // configure our routes
     whalee.config(function($routeProvider) {
@@ -44,13 +29,17 @@
             });
     });
 
-whalee.controller('mainController', function($scope,$http) {
+whalee.controller('mainController', function($scope,$http,$rootScope) {
     $scope.formData = {};
     $scope.showProjects = false;
     $scope.projectsIcon = "keyboard_arrow_right";
-    $scope.projectList = [{name : "projet1", id : "id1"},{name : "projet2", id : "id2"}];
-    $scope.onProjectsClick = function(){
+    $scope.projectList = [];
 
+    $rootScope.$on('updateProjectList', function () {
+      getProjectsDeployed();
+    });
+
+    $scope.onProjectsClick = function(){
         $scope.showProjects = ! $scope.showProjects;
         if($scope.showProjects){
             $scope.projectsIcon = "keyboard_arrow_down";
@@ -59,40 +48,71 @@ whalee.controller('mainController', function($scope,$http) {
         }
         console.log($scope.showProjects);
     }
+
+    function getProjectsDeployed() {
+      $http.get('/api/projects/deployed')
+            .success(function(data){
+                $scope.projectList = data;
+                $rootScope.projectList = data;
+                if (data.length==0) {
+                  if ($scope.showProjects) {
+                    $scope.onProjectsClick();
+                  }
+                } else {
+                  if (!$scope.showProjects) {
+                    $scope.onProjectsClick();
+                  }
+                }
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+    }
+
+    getProjectsDeployed();
+
     $http.get('/api/user/')
             .success(function(data){
                 $scope.userInfo = data;
+                $rootScope.userInfo = data;
                 console.log(data);
             })
             .error(function(data){
-                
                 console.log('Error: '+data);
             });
-
 });
 
 whalee.controller('slaController', function($scope,$http) {
     $scope.message = "Please, choose your SLA.";
+
+    $scope.isBronze = false;
+    $scope.isSilver = false;
+    $scope.isGold = false;
     $http.get('/api/user/')
             .success(function(data){
                 $scope.userInfo = data;
                 console.log(data);
+                if(($scope.userInfo.sla) == "1"){
+        $scope.isBronze = true;
+    }else if($scope.userInfo.sla == "2"){
+        $scope.isSilver = true;
+
+
+    }else if($scope.userInfo.sla == "3"){
+        $scope.isGold = true;
+
+
+    }else if($scope.userInfo.sla == "3"){
+        $scope.isGold = true;
+    }
+
             })
             .error(function(data){
                 
                 console.log('Error: '+data);
             });
 
-    $scope.isBronze = false;
-    $scope.isSilver = false;
-    $scope.isGold = false;
-    if(($scope.userInfo.sla) == "1"){
-        $scope.isBronze = true;
-    }else if($scope.userInfo.sla == "2"){
-        $scope.isSilver = true;
-    }else if($scope.userInfo.sla == "3"){
-        $scope.isGold = true;
-    }
+    
 
     $scope.onBronzeClick = function(){
         $scope.isBronze = true;
@@ -134,17 +154,33 @@ whalee.controller('slaController', function($scope,$http) {
                 console.log(data);
             })
             .error(function(data){
-                
                 console.log('Error: '+data);
             });
     };
 });
 
-whalee.controller('projectsController', function($scope, $http, id) {
-    $scope.message = 'This is the project: '+id;
-    $scope.isDeployed = false;
+whalee.controller('projectsController', function($scope, $http, id, $rootScope, $location,$interval,$timeout) {
+    $scope.project = null;
+    for (i in $rootScope.projectList) {
+      if ($rootScope.projectList[i].githubID==id) {
+        $scope.project = $rootScope.projectList[i];
+      }
+    }
 
-    $scope.timeScale = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+    $scope.first = true;
+    $scope.index = null;
+
+    $scope.userInfo = $rootScope.userInfo;
+    $scope.message = 'This is the project : '+$scope.project.name;
+    $scope.isDeployed = false;
+    $scope.hooked = ($scope.project.hooked=="0")?false:true;
+
+    $scope.currentContainerId = "";
+
+    $scope.timeScaleCPU = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+    $scope.timeScaleMem = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+    $scope.timeScaleDisk = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+
     $scope.seriesCPU = ['CPU'];
     $scope.seriesMem = ['Memory'];
     $scope.seriesDisk = ['Disk'];
@@ -154,49 +190,133 @@ whalee.controller('projectsController', function($scope, $http, id) {
 
     $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
-
-    $scope.containers = [{id : "C1"},{id : "C2"},{id : "C3"},{id : "C4"}];
-
-
-    $scope.onContainerClick = function(id){
-        console.log("On click sur le container "+id);
-        if(id=="C1"){
-            $scope.dataCPU = [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]];
-
-            $scope.dataMem = [[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]];
-
-            $scope.dataDisk = [[10, 10, 10, 10, 10, 10, 10, 10, 10, 10]];
-
-
-        }else if (id=="C2") {
-
-            $scope.dataCPU = [[5, 5, 5, 5, 10, 10, 8, 7, 6, 5]];
-
-            $scope.dataMem = [[4, 4, 7, 4, 4, 7, 4, 4, 7, 4]];
-
-            $scope.dataDisk = [[4, 4, 5, 5, 6, 6, 7, 7, 8, 8]];
-
-        }else if (id=="C3") {
-
-            $scope.dataCPU = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-            $scope.dataMem = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-            $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-
-        }else if (id=="C4") {
-
-            $scope.dataCPU = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-            $scope.dataMem = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-            $scope.dataDisk = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
-        }
-
+    $scope.autoDeploy = function () {
+      if ($scope.hooked) {
+        $http.post('/api/projects/deployed/'+$scope.project.githubID+'/enableautodeploy')
+            .success(function(data){
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+      } else {
+        $http.post('/api/projects/deployed/'+$scope.project.githubID+'/disableautodeploy')
+            .success(function(data){
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+      }
     }
 
+    $scope.onRemoveClick = function () {
+      $http.delete('/api/projects/deployed/'+id)
+            .success(function(data){
+                $rootScope.$broadcast('updateProjectList');
+                $location.path('/sla');
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+    }
+
+    $scope.containers = [{
+    id: "Container 1",
+    data: { proc: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15,14,12,13,4,3,3,3,3],
+    }, memory: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+    }, disk: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+    }}
+}, {
+    id: "Container 2",
+    data: { proc: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+    }, memory: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+    }, disk: {
+        max: 100,
+        cur:10,
+        hist: [1,12,15],
+    }}
+}];
+
+
+function getTimeScale(size){
+    var list = [];
+
+    for(var i = (size-1); i>=0; i--){
+        list.push(i);
+    }
+
+    return list;
+}
+
+  
+    function getData() {
+      $http.get('/api/projects/deployed/'+$scope.project.githubID+'/data')
+            .success(function(data){
+                $scope.containers = data;
+                console.log(data);
+                if ($scope.index!=null) {
+                  $timeout(function () { $( "table.mdl-data-table tbody>tr:nth-child("+parseInt($scope.index)+")" ).css( "background-color", "pink" ); }, 100);
+                }
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+      }
+
+    getData();
+
+    $interval(getData, 5000);
+
+function retrieveData(){
+    //console.log("On rentre dans le retrieveData.");
+    //console.log("current ID : "+ $scope.currentContainerId);
+
+    for(var i = 0; i<$scope.containers.length; i++){
+        //console.log("ID visité: "+ $scope.containers[i].id);
+
+        if($scope.containers[i].id == $scope.currentContainerId){
+            //console.log("On a trouver un id qui est "+ $scope.containers[i].id);
+            var data  = $scope.containers[i].data;
+
+            $scope.timeScaleCPU = getTimeScale(data.proc.hist.length);
+            //console.log($scope.containers[i] +" "+ i);
+            $scope.dataCPU = [];
+            var temp = data.proc.hist;
+            $scope.dataCPU.push(temp);
+
+            $scope.timeScaleMem = getTimeScale(data.memory.hist.length);
+            $scope.dataMem = [];
+            $scope.dataMem.push(data.memory.hist);
+
+            $scope.timeScaleDisk = getTimeScale(data.disk.hist.length);
+            $scope.dataDisk = [];
+            $scope.dataDisk.push(data.disk.hist);
+        }
+    }
+}
+
+    $scope.onContainerClick = function(containerId,index){
+        $scope.index = parseInt(index+1);
+        $( "table.mdl-data-table tbody>tr" ).css( "background-color", "white" );
+        $( "table.mdl-data-table tbody>tr:nth-child("+parseInt(index+1)+")" ).css( "background-color", "pink" );
+        console.log("On click sur le container "+id);
+        $scope.currentContainerId = containerId;
+        retrieveData();
+    }
 
     $scope.deployButtonText = function(){
         return ($scope.isDeployed) ? "Undeploy" : "Deploy";
@@ -204,104 +324,66 @@ whalee.controller('projectsController', function($scope, $http, id) {
     $scope.onDeployClick = function(){
         $scope.isDeployed = !($scope.isDeployed);
     }
-    $http.get('/api/projects/')
+
+    /*$http.get('/api/projects/')
             .success(function(data){
                 $scope.projects = data;
                 console.log(data);
             })
             .error(function(data){
-                
                 console.log('Error: '+data);
-            });
+            });*/
 });
 
-whalee.controller('addController', function($scope, $http) {
+whalee.controller('addController', function($scope, $http, $rootScope) {
     $scope.message = 'Please, select the projects to add.';
-    $scope.projectToAdd = [];
+    $scope.projectListGitHub = [];
 
-    $scope.toggleSelection = function toggleSelection(project) {
-        var idx = $scope.projectToAdd.indexOf(project);
+    $scope.onAddClick = function(index){
+        console.log($scope.projectListGitHub);
+        $http.post('/api/projects/fakedeploy', $scope.projectListGitHub[index])
+            .success(function(data){
+                console.log(data);
+                $rootScope.$broadcast('updateProjectList');
+                updateList();
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+    }
 
-        // is currently selected
-        if (idx > -1) {
-          $scope.projectToAdd.splice(idx, 1);
-        }
+    $scope.onDeleteClick = function(index){
+        console.log($scope.projectListGitHub);
+        $http.delete('/api/projects/deployed/'+$scope.projectListGitHub[index].id)
+            .success(function(data){
+                console.log(data);
+                $rootScope.$broadcast('updateProjectList');
+                updateList();
+            })
+            .error(function(data){
+                console.log('Error: '+data);
+            });
+    }
 
-        // is newly selected
-        else {
-          $scope.projectToAdd.push(project);
-        }
-    };
-
-    $scope.onAddClick = function(){
-        console.log($scope.projectToAdd);
-    };
-    $http.get('/api/projects/')
+    function updateList() {
+      $http.get('/api/projects/')
             .success(function(data){
                 $scope.projectListGitHub = data;
-                console.log(data);
+                var tab = $rootScope.projectList;
+                for (i in $scope.projectListGitHub) {
+                  $scope.projectListGitHub[i].added=false;
+                  for (j in tab) {
+                    if (tab[j].githubID==$scope.projectListGitHub[i].id) {
+                      $scope.projectListGitHub[i].added=true;
+                    }
+                  }
+                }
+console.log(data);
             })
             .error(function(data){
-                
                 console.log('Error: '+data);
             });
+    }
+
+    updateList();
 });
-
-/*function mainController($scope, $http) {
-
-    $scope.message = "We are in the home"
-    $scope.formData = {};
-    $http.get('/api/user/')
-            .success(function(data){
-                $scope.userInfo = data;
-                console.log(data);
-            })
-            .error(function(data){
-                
-                console.log('Error: '+data);
-            });
-
-}*/
-
-
-
-
-    /*$scope.addUser = function() {
-        console.log("ICI");
-        $http.post('/api/users', $scope.formData)
-            .success(function(data){
-                $scope.userInfo = data;
-                console.log(data);
-            })
-            .error(function(data){
-                
-                console.log('Error: ' + data);
-            });
-    };
-
-    $scope.removeUser = function() {
-        $http.delete('/api/users/' + 'user1')
-            .success(function(data){
-                $scope.userInfo = data;
-                console.log(data);
-            })
-            .error(function(data){
-                
-                console.log('Error: '+data);
-            });
-    };
-
-    $scope.getUser = function() {
-        $http.get('/api/lolcat/')
-            .success(function(data){
-                $scope.userInfo = data;
-                console.log(data);
-            })
-            .error(function(data){
-                
-                console.log('Error: '+data);
-            });
-    };*/
-
-    
-/*}*/
