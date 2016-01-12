@@ -459,11 +459,11 @@ module.exports = function(app) {
                 }];
 
             if(alt == 0) {
-                console.log("STR : " + str);
+                console.log("STR : " + JSON.stringify(str));
                 res.json(str);
                 alt = 1;
             } else {
-                console.log("STR : " + str2);
+                console.log("STR : " + JSON.stringify(str2));
                 res.json(str2);
                 alt = 0;
             }
