@@ -279,7 +279,7 @@ function getTimeScale(size){
 
     getData();
 
-    $interval(getData, 5000);
+    $interval(getData, 2000);
 
 function retrieveData(){
     //console.log("On rentre dans le retrieveData.");
@@ -341,7 +341,7 @@ whalee.controller('addController', function($scope, $http, $rootScope) {
 
     $scope.onAddClick = function(index){
         console.log($scope.projectListGitHub);
-        $http.post('/api/projects/fakedeploy', $scope.projectListGitHub[index])
+        $http.post('/api/projects/deployed', $scope.projectListGitHub[index])
             .success(function(data){
                 console.log(data);
                 $rootScope.$broadcast('updateProjectList');
