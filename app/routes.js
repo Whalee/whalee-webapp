@@ -5,6 +5,7 @@ var Project = require('./models/project');
 var https = require('https');
 var http = require('http');
 var webhook = require("../config/webhook.json");
+var alt = 0;
 
 
 // expose the routes to our app with module.exports
@@ -203,6 +204,9 @@ module.exports = function(app) {
                                };
                     var dataStr = JSON.stringify(data);
 
+
+                    console.log("DATA : " + dataStr)
+
                     var options = {
                         host : 'localhost', // here only the domain name  @@@@@ TO DO @@@@@
                         // (no http/https !)
@@ -361,50 +365,94 @@ module.exports = function(app) {
         }
     }); */
     
-/*
-    app.get('api/containers/:id', function(req, res) {
+
+    app.get('/api/projects/deployed/:id/data', function(req, res) {
         if(req.user){
-            var str = "\[
+        var str = [{{ julienbiau/blabla},
 {
-  \"proc\": {
-    \"max\": 100.0,
-    \"cur\": 10.0,
-    \"hist\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+  "proc": {
+    "max": 100.0,
+    "cur": 10.0,
+    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
   },
-    \"disk\": {
-    \"max\": 128.0,
-    \"cur\": 1.0,
-    \"hist\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+    "disk": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
   },
-  \"memory\": {
-    \"max\": 128.0,
-    \"cur\": 1.0,
-    \"hist\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+  "memory": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
   }
-},
+}},
+{{julienbiau/blabla2},
 {
-  \"proc\": {
-    \"max\": 100.0,
-    \"cur\": 10.0,
-    \"hist\": [1, 7, 3, 4, 5, 6, 2, 8, 2, 8]
+  "proc": {
+    "max": 100.0,
+    "cur": 10.0,
+    "hist": [1, 7, 3, 4, 5, 6, 2, 8, 2, 8]
   },
-  \"disk\": {
-    \"max\": 128.0,
-    \"cur\": 1.0,
-    \"hist\": [1, 2, 3, 2, 5, 6, 2, 8, 2, 8]
+  "disk": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 2, 8]
   },
-  \"memory\": {
-    \"max\": 128.0,
-    \"cur\": 1.0,
-    \"hist\": [1, 2, 3, 2, 5, 6, 2, 8, 9, 8]
+  \"memory": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 9, 8]
   }
-}\]';
-            res.json(str);
+}}];
+
+var str2 = [{{ julienbiau/blabla},
+{
+  "proc": {
+    "max": 100.0,
+    "cur": 10.0,
+    "hist": [1, 7, 3, 4, 5, 6, 2, 8, 2, 8]
+  },
+  "disk": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 2, 8]
+  },
+  \"memory": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 9, 8]
+  }
+}},
+{{julienbiau/blabla2},
+{
+  "proc": {
+    "max": 100.0,
+    "cur": 10.0,
+    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+  },
+    "disk": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+  },
+  "memory": {
+    "max": 128.0,
+    "cur": 1.0,
+    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+  }
+}}];
+            if(alt == 0) {
+                res.json(str);
+                alt = 1;
+            } else {
+                res.json(str2);
+                alt = 0;
+            }
         } else {
             res.redirect('/');
         }
     });
-*/
+
     // github api ---------------------------------------------------------------------
 
     // get all github projects
@@ -561,7 +609,7 @@ module.exports = function(app) {
                 res.send(err);
 
             if (project) { 
-                //res.redirect('/api/projects/deployed/' + project.githubID + '/redeploy');
+                res.redirect('/api/projects/deployed/' + project.githubID + '/redeploy');
                 project.deployed = '1';
                 project.save(function(err) {
                     if (err)
