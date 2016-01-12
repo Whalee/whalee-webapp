@@ -368,79 +368,95 @@ module.exports = function(app) {
 
     app.get('/api/projects/deployed/:id/data', function(req, res) {
         if(req.user){
-        var str = [{{"julienbiau/blabla"},
-{
-  "proc": {
-    "max": 100.0,
-    "cur": 10.0,
-    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
-  },
-    "disk": {
-    "max": 128.0,
-    "cur": 1.0,
-    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
-  },
-  "memory": {
-    "max": 128.0,
-    "cur": 1.0,
-    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
-  }
-}},
-{{"julienbiau/blabla2"},
-{
-  "proc": {
-    "max": 100.0,
-    "cur": 10.0,
-    "hist": [1, 7, 3, 4, 5, 6, 2, 8, 2, 8]
-  },
-  "disk": {
-    "max": 128.0,
-    "cur": 1.0,
-    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 2, 8]
-  },
-  \"memory": {
-    "max": 128.0,
-    "cur": 1.0,
-    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 9, 8]
-  }
-}}];
+            var str = 
+                [{
+                    "id" : "julienbiau/blabla", 
+                    "data" :
+                        {
+                          "proc": {
+                            "max": 100.0,
+                            "cur": 10.0,
+                            "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+                          },
+                            "disk": {
+                            "max": 128.0,
+                            "cur": 1.0,
+                            "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+                          },
+                          "memory": {
+                            "max": 128.0,
+                            "cur": 1.0,
+                            "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+                          }
+                        }
+                },
+                {
+                    "id" : "julienbiau/blabla2", 
+                    "data" :
+                        {
+                          "proc": {
+                            "max": 100.0,
+                            "cur": 10.0,
+                            "hist": [1, 7, 3, 4, 5, 6, 2, 8, 2, 8]
+                          },
+                          "disk": {
+                            "max": 128.0,
+                            "cur": 1.0,
+                            "hist": [1, 2, 3, 2, 5, 6, 2, 8, 2, 8]
+                          },
+                          "memory": {
+                            "max": 128.0,
+                            "cur": 1.0,
+                            "hist": [1, 2, 3, 2, 5, 6, 2, 8, 9, 8]
+                          }
+                        }
+                }];
 
-var str2 = [{{"julienbiau/blabla"},
-{
-  "proc": {
-    "max": 100.0,
-    "cur": 10.0,
-    "hist": [1, 7, 3, 4, 5, 6, 2, 8, 2, 8]
-  },
-  "disk": {
-    "max": 128.0,
-    "cur": 1.0,
-    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 2, 8]
-  },
-  \"memory": {
-    "max": 128.0,
-    "cur": 1.0,
-    "hist": [1, 2, 3, 2, 5, 6, 2, 8, 9, 8]
-  }
-}},
-{{"julienbiau/blabla2"},
-{
-  "proc": {
-    "max": 100.0,
-    "cur": 10.0,
-    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
-  },
-    "disk": {
-    "max": 128.0,
-    "cur": 1.0,
-    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
-  },
-  "memory": {
-    "max": 128.0,
-    "cur": 1.0,
-    "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
-  }
-}}];
+            var str2 = 
+                [{
+                    "id" : "julienbiau/blabla", 
+                    "data" :
+                        {
+                          "proc": {
+                            "max": 100.0,
+                            "cur": 10.0,
+                            "hist": [1, 7, 3, 4, 5, 6, 2, 8, 2, 8]
+                          },
+                          "disk": {
+                            "max": 128.0,
+                            "cur": 1.0,
+                            "hist": [1, 2, 3, 2, 5, 6, 2, 8, 2, 8]
+                          },
+                          "memory": {
+                            "max": 128.0,
+                            "cur": 1.0,
+                            "hist": [1, 2, 3, 2, 5, 6, 2, 8, 9, 8]
+                          }
+                        }
+                },
+                {
+                    "id" : "julienbiau/blabla2", 
+                    "data" :
+                        {
+                          "proc": {
+                            "max": 100.0,
+                            "cur": 10.0,
+                            "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+                          },
+                            "disk": {
+                            "max": 128.0,
+                            "cur": 1.0,
+                            "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+                          },
+                          "memory": {
+                            "max": 128.0,
+                            "cur": 1.0,
+                            "hist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 8]
+                          }
+                        }
+
+                }];
+
             if(alt == 0) {
                 res.json(str);
                 alt = 1;
@@ -448,6 +464,7 @@ var str2 = [{{"julienbiau/blabla"},
                 res.json(str2);
                 alt = 0;
             }
+            
         } else {
             res.redirect('/');
         }
